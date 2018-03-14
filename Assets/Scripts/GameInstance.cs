@@ -7,7 +7,7 @@ public class GameInstance : SingletonMonoBehaviour<GameInstance>
     SLGCore core;
 	// Use this for initialization
 	void Start () {
-        core = new SLGCore(32, 32);
+        core = new SLGCore(8, 8, HexMetrics.chunkSizeX, HexMetrics.chunkSizeZ);
 
         GameObject drawer = GameObject.Find("HexMesh");
         if(drawer != null)
