@@ -7,12 +7,12 @@ public class GameInstance : SingletonMonoBehaviour<GameInstance>
     SLGCore core;
 	// Use this for initialization
 	void Start () {
-        core = new SLGCore(64, 64);
+        core = new SLGCore(32, 32);
 
-        GameObject drawer = GameObject.Find("HexDrawer");
+        GameObject drawer = GameObject.Find("HexMesh");
         if(drawer != null)
         {
-            drawer.GetComponent<HexDrawer>().SetData(core);
+            drawer.GetComponent<HexMesh>().SetData(core);
         }
 	}
 	

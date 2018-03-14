@@ -7,7 +7,7 @@ public class HexGrid
 
     public HexGrid(int width, int height)
     {
-        float[,] noise = NoiseGenerator.Generate(width, height, 4.0f, 4.0f, 2.0f, 1.0f);
+        float[,] noise = NoiseGenerator.Generate(width, height, 4.0f, 4.0f * 0.75f, 2.0f, 1.0f);
 
         cells = new HexCell[width * height];
 
