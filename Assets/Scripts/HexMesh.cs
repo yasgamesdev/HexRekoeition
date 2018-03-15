@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
+using System.Linq;
 
 public class HexMesh : MonoBehaviour
 {
@@ -11,6 +12,7 @@ public class HexMesh : MonoBehaviour
     public GameObject pathPrefab;
     GameObject start, goal;
     HexCoordinates startCoordinates, goalCoordinates;
+    int startIndex, goalIndex;
 
     void CreateChunks()
     {
@@ -95,7 +97,12 @@ public class HexMesh : MonoBehaviour
 
                 startCoordinates = HexCoordinates.FromOffsetCoordinates(_x, _z);
 
-                CheckDistance();
+                //CheckDistance();
+                startIndex = index;
+                SetPath();
+
+                //Debug.Log(_x + ", " + _z);
+                //Debug.Log(startCoordinates.X + ", " + startCoordinates.Y + ", " + startCoordinates.Z);
             }
         }
         else if (core != null & Input.GetMouseButtonDown(1))
@@ -153,7 +160,9 @@ public class HexMesh : MonoBehaviour
 
                 goalCoordinates = HexCoordinates.FromOffsetCoordinates(_x, _z);
 
-                CheckDistance();
+                //CheckDistance();
+                goalIndex = index;
+                SetPath();
             }
         }
     }
@@ -172,5 +181,99 @@ public class HexMesh : MonoBehaviour
 
             Debug.Log(distance);
         }
+    }
+
+    const int SeaCost = 30;
+    const int LandCost = 3;
+
+    List<GameObject> path = new List<GameObject>();
+
+    void SetPath()
+    {
+        if (start != null & goal != null)
+        {
+            ANode[] nodes = new ANode[core.width * core.height];
+            for(int z =0; z<core.height; z++)
+            {
+                for (int x = 0; x < core.width; x++)
+                {
+                    nodes[x + z * core.width] = new ANode(x, z);
+                }
+            }
+
+            nodes[startIndex].C = 0;
+            nodes[startIndex].H = GetDistance(startIndex, goalIndex);
+            nodes[startIndex].state = ANodeState.Open;
+
+            while(true)
+            {
+                if(nodes[goalIndex].state == ANodeState.Open)
+                {
+                    break;
+                }
+                else
+                {
+                    int minS = nodes.Where(x => x.state == ANodeState.Open).Min(x => x.S);
+                    ANode minNode = nodes.Where(x => x.state == ANodeState.Open && x.S == minS).OrderBy(x => x.C).ToArray()[0];
+                    minNode.state = ANodeState.Close;
+
+                    OpenNode(minNode.x + (minNode.z % 2), minNode.z + 1, nodes, minNode);
+                    OpenNode(minNode.x + 1, minNode.z, nodes, minNode);
+                    OpenNode(minNode.x + (minNode.z % 2), minNode.z - 1, nodes, minNode);
+                    OpenNode(minNode.x - ((minNode.z + 1) % 2), minNode.z - 1, nodes, minNode);
+                    OpenNode(minNode.x - 1, minNode.z, nodes, minNode);
+                    OpenNode(minNode.x - ((minNode.z + 1) % 2), minNode.z + 1, nodes, minNode);
+                }
+            }
+
+            path.ForEach(x => Destroy(x));
+            path.Clear();
+
+            ShowPath(nodes[goalIndex]);
+        }
+    }
+
+    void OpenNode(int x, int z, ANode[] nodes, ANode minNode)
+    {
+        if (0 <= x && x < core.width && 0 <= z && z < core.height)
+        {
+            if (nodes[x + core.width * z].state == ANodeState.None)
+            {
+                int index = x + core.width * z;
+                nodes[index].C = minNode.C + (core.GetHexCell(x, z).terrain == Terrain.Sea ? SeaCost : LandCost);
+                nodes[index].H = GetDistance(index, goalIndex);
+                nodes[index].parent = minNode;
+                nodes[index].state = ANodeState.Open;
+            }
+        }
+    }
+
+    void ShowPath(ANode node)
+    {
+        if(node.parent != null)
+        {
+            ShowPath(node.parent);
+        }
+
+        Vector3 center;
+        center.x = (node.x + node.z * 0.5f - node.z / 2) * (HexMetrics.innerRadius * 2f);
+        center.y = 1.0f;
+        center.z = node.z * (HexMetrics.outerRadius * 1.5f);
+
+        GameObject obj = Instantiate(pathPrefab, transform);
+        obj.transform.localPosition = center;
+        path.Add(obj);
+    }
+
+    int GetDistance(int indexFrom, int indexTo)
+    {
+        HexCoordinates fromCoordinates = HexCoordinates.FromOffsetCoordinates(indexFrom % core.width, indexFrom / core.width);
+        HexCoordinates toCoordinates = HexCoordinates.FromOffsetCoordinates(indexTo % core.width, indexTo / core.width);
+
+        int dX = Mathf.Abs(fromCoordinates.X - toCoordinates.X);
+        int dY = Mathf.Abs(fromCoordinates.Y - toCoordinates.Y);
+        int dZ = Mathf.Abs(fromCoordinates.Z - toCoordinates.Z);
+
+        return (dX + dY + dZ) / 2;
     }
 }

@@ -632,7 +632,7 @@ PlayerSettings:
   cloudServicesEnabled:
     UNet: 1
   facebookSdkVersion: 7.9.4
-  apiCompatibilityLevel: 2
+  apiCompatibilityLevel: 3
   cloudProjectId: b4de5a92-1722-421e-8e3d-ba956bf36f3d
   projectName: HexRekoeition
   organizationId: hiroyuki-yasuda
