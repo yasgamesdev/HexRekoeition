@@ -14,6 +14,8 @@ public class HexMesh : MonoBehaviour
     HexCoordinates startCoordinates, goalCoordinates;
     int startIndex, goalIndex;
 
+    public GameObject buildingsPrefab, roadPrefab;
+
     void CreateChunks()
     {
         if(core != null)
@@ -38,6 +40,147 @@ public class HexMesh : MonoBehaviour
         //Triangulate();
 
         CreateChunks();
+
+        CreateBuildings(20, 20);
+
+        CreateRoad();
+    }
+
+    List<int> buildingsIndexes = new List<int>();
+
+    void CreateBuildings(int landBuildingsCount, int seaBuildingCount)
+    {
+        List<int> canLandBuildingsIndexes = new List<int>();
+        List<int> canSeaBuildingsIndexes = new List<int>();
+
+        for (int z = 0; z < core.height; z++)
+        {
+            for (int x = 0; x < core.width; x++)
+            {
+                if (core.GetHexCell(x, z).terrain == Terrain.Land)
+                {
+                    if (IsSeaTerrain(x + z % 2, z + 1) || IsSeaTerrain(x + 1, z) || IsSeaTerrain(x + z % 2, z - 1) ||
+                        IsSeaTerrain(x - (z + 1) % 2, z - 1) || IsSeaTerrain(x - 1, z) || IsSeaTerrain(x - (z + 1) % 2, z + 1))
+                    {
+                        canSeaBuildingsIndexes.Add(x + z * core.width);
+
+                        //Vector3 center;
+                        //center.x = (x + z * 0.5f - z / 2) * (HexMetrics.innerRadius * 2f);
+                        //center.y = 0.1f;
+                        //center.z = z * (HexMetrics.outerRadius * 1.5f);
+
+                        //GameObject obj = Instantiate(buildingsPrefab, transform);
+                        //obj.transform.localPosition = center;
+                    }
+                    else
+                    {
+                        canLandBuildingsIndexes.Add(x + z * core.width);
+
+                        //Vector3 center;
+                        //center.x = (x + z * 0.5f - z / 2) * (HexMetrics.innerRadius * 2f);
+                        //center.y = 0.1f;
+                        //center.z = z * (HexMetrics.outerRadius * 1.5f);
+
+                        //GameObject obj = Instantiate(roadPrefab, transform);
+                        //obj.transform.localPosition = center;
+                    }
+                }
+            }
+        }
+
+        int minLandBuildingsCount = Mathf.Min(landBuildingsCount, canLandBuildingsIndexes.Count);
+        int minSeaBuildingCount = Mathf.Min(seaBuildingCount, canSeaBuildingsIndexes.Count);
+
+        for (int i = 0; i < minLandBuildingsCount; i++)
+        {
+            int randIndex = Random.Range(0, canLandBuildingsIndexes.Count);
+            buildingsIndexes.Add(canLandBuildingsIndexes[randIndex]);
+            canLandBuildingsIndexes.RemoveAt(randIndex);
+        }
+
+        for (int i = 0; i < minSeaBuildingCount; i++)
+        {
+            int randIndex = Random.Range(0, canSeaBuildingsIndexes.Count);
+            buildingsIndexes.Add(canSeaBuildingsIndexes[randIndex]);
+            canSeaBuildingsIndexes.RemoveAt(randIndex);
+        }
+
+        for(int index = 0; index < buildingsIndexes.Count; index++)
+        {
+            int x = buildingsIndexes[index] % core.width;
+            int z = buildingsIndexes[index] / core.width;
+
+            Vector3 center;
+            center.x = (x + z * 0.5f - z / 2) * (HexMetrics.innerRadius * 2f);
+            center.y = 2.0f;
+            center.z = z * (HexMetrics.outerRadius * 1.5f);
+
+            GameObject obj = Instantiate(buildingsPrefab, transform);
+            obj.transform.localPosition = center;
+        }
+    }
+
+    List<int> setRoadIndexes = new List<int>();
+
+    void CreateRoad()
+    {
+        setRoadIndexes.Add(0);
+
+        while(true)
+        {
+            if(setRoadIndexes.Count == buildingsIndexes.Count)
+            {
+                break;
+            }
+            else
+            {
+                List<int> notSetRoadIndexes = new List<int>();
+                for(int i=0; i<buildingsIndexes.Count; i++)
+                {
+                    if(!setRoadIndexes.Contains(i))
+                    {
+                        notSetRoadIndexes.Add(i);
+                    }
+                }
+
+                int minDistance = int.MaxValue;
+                int minSetRoadIndex = 0, minNotSetRoadIndex = 0;
+
+                foreach(int fromIndex in notSetRoadIndexes)
+                {
+                    int i = buildingsIndexes[fromIndex];
+                    foreach(int toIndex in setRoadIndexes)
+                    {
+                        int j = buildingsIndexes[toIndex];
+                        int distance = GetDistance(i, j);
+                        if(distance < minDistance)
+                        {
+                            minDistance = distance;
+                            minSetRoadIndex = toIndex;
+                            minNotSetRoadIndex = fromIndex;
+                        }
+                    }
+                }
+
+                startIndex = buildingsIndexes[minSetRoadIndex];
+                goalIndex = buildingsIndexes[minNotSetRoadIndex];
+                SetRoadPath();
+
+                setRoadIndexes.Add(minNotSetRoadIndex);
+            }
+        }
+    }
+
+    bool IsSeaTerrain(int x, int z)
+    {
+        if (0 <= x && x < core.width && 0 <= z && z < core.height)
+        {
+            return core.GetHexCell(x, z).terrain == Terrain.Sea;
+        }
+        else
+        {
+            return false;
+        }
     }
 
     private void Update()
@@ -183,17 +326,56 @@ public class HexMesh : MonoBehaviour
         }
     }
 
-    const int SeaCost = 30;
+    const int SeaCost = 9;
     const int LandCost = 3;
 
     List<GameObject> path = new List<GameObject>();
+
+    void SetRoadPath()
+    {
+        ANode[] nodes = new ANode[core.width * core.height];
+        for (int z = 0; z < core.height; z++)
+        {
+            for (int x = 0; x < core.width; x++)
+            {
+                nodes[x + z * core.width] = new ANode(x, z);
+            }
+        }
+
+        nodes[startIndex].C = 0;
+        nodes[startIndex].H = GetDistance(startIndex, goalIndex);
+        nodes[startIndex].state = ANodeState.Open;
+
+        while (true)
+        {
+            if (nodes[goalIndex].state == ANodeState.Open)
+            {
+                break;
+            }
+            else
+            {
+                int minS = nodes.Where(x => x.state == ANodeState.Open).Min(x => x.S);
+                ANode minNode = nodes.Where(x => x.state == ANodeState.Open && x.S == minS).OrderBy(x => x.C).ToArray()[0];
+                minNode.state = ANodeState.Close;
+
+                OpenNode(minNode.x + (minNode.z % 2), minNode.z + 1, nodes, minNode);
+                OpenNode(minNode.x + 1, minNode.z, nodes, minNode);
+                OpenNode(minNode.x + (minNode.z % 2), minNode.z - 1, nodes, minNode);
+                OpenNode(minNode.x - ((minNode.z + 1) % 2), minNode.z - 1, nodes, minNode);
+                OpenNode(minNode.x - 1, minNode.z, nodes, minNode);
+                OpenNode(minNode.x - ((minNode.z + 1) % 2), minNode.z + 1, nodes, minNode);
+            }
+        }
+
+        ShowPath(nodes[goalIndex]);
+    }
 
     void SetPath()
     {
         if (start != null & goal != null)
         {
             ANode[] nodes = new ANode[core.width * core.height];
-            for(int z =0; z<core.height; z++)
+            for (int z = 0; z < core.height; z++)
             {
                 for (int x = 0; x < core.width; x++)
                 {
@@ -205,9 +387,9 @@ public class HexMesh : MonoBehaviour
             nodes[startIndex].H = GetDistance(startIndex, goalIndex);
             nodes[startIndex].state = ANodeState.Open;
 
-            while(true)
+            while (true)
             {
-                if(nodes[goalIndex].state == ANodeState.Open)
+                if (nodes[goalIndex].state == ANodeState.Open)
                 {
                     break;
                 }
@@ -260,7 +442,7 @@ public class HexMesh : MonoBehaviour
         center.y = 1.0f;
         center.z = node.z * (HexMetrics.outerRadius * 1.5f);
 
-        GameObject obj = Instantiate(pathPrefab, transform);
+        GameObject obj = Instantiate(roadPrefab, transform);
         obj.transform.localPosition = center;
         path.Add(obj);
     }

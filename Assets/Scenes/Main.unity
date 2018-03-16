@@ -156,6 +156,9 @@ MonoBehaviour:
   chunkPrefab: {fileID: 1142677172071252, guid: 60061ab34c0b6a84c9e1cfb32fdde099,
     type: 2}
   pathPrefab: {fileID: 1869417960347736, guid: 8d2649528261dcc4e9972a7e2b45ee4d, type: 2}
+  buildingsPrefab: {fileID: 1454245940076354, guid: c0b1a4cf125ce0644b9700de7db2d491,
+    type: 2}
+  roadPrefab: {fileID: 1747624549451366, guid: b109dbed4810dd74992bcc272c009b8b, type: 2}
 --- !u!1 &618854346
 GameObject:
   m_ObjectHideFlags: 0
