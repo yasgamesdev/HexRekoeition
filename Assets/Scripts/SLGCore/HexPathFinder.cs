@@ -102,4 +102,23 @@ public class HexPathFinder
 
         return cells;
     }
+
+    public static int GetCost(List<HexCell> path)
+    {
+        int sum = 0;
+
+        foreach(HexCell cell in path)
+        {
+            if(cell.building == Building.Road)
+            {
+                sum += RoadCost;
+            }
+            else
+            {
+                sum += (cell.terrain == Terrain.Sea ? SeaCost : LandCost);
+            }
+        }
+
+        return sum;
+    }
 }

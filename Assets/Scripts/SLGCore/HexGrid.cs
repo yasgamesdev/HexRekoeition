@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -15,7 +14,7 @@ public class HexGrid
         this.width = width;
         this.height = height;
 
-        float[,] noise = NoiseGenerator.Generate(width, height, 4.0f, 4.0f * 0.75f, 2.0f, 1.0f);
+        float[,] noise = NoiseGenerator.Generate(width, height, 6.0f, 6.0f * 0.75f, 2.0f, 1.0f);
 
         cells = new HexCell[width * height];
 
@@ -39,11 +38,13 @@ public class HexGrid
 
     void SetBuilding()
     {
-        SetCastle(30, 4);
+        SetCastle(120, 4);
 
-        SetTown(40, 3);
+        SetTown(160, 3);
 
         SetRoad();
+
+        SetSecondaryRoad(12, 12);
     }
 
     void SetCastle(int castleCount, int minDistance)
@@ -134,6 +135,29 @@ public class HexGrid
                 setRoadCells.Add(minNotSetRoadCell);
 
                 HexPathFinder.GetPath(minNotSetRoadCell, minSetRoadCell, width, height, cells).ForEach(x => x.SetBuilding((x.building == Building.None) ? Building.Road : x.building));
+            }
+        }
+    }
+
+    void SetSecondaryRoad(int range, int diff)
+    {
+        List<HexCell> castleOrTownCells = cells.Where(x => x.building == Building.Castle || x.building == Building.Town).ToList();
+
+        foreach(HexCell cell in castleOrTownCells)
+        {
+            List<HexCell> closeCells = castleOrTownCells.Where(x => 0 < HexCell.GetDistance(x, cell) && HexCell.GetDistance(x, cell) <= range).ToList();
+
+            foreach(HexCell closeCell in closeCells)
+            {
+                int distance = HexCell.GetDistance(cell, closeCell);
+
+                List<HexCell> path = HexPathFinder.GetPath(cell, closeCell, width, height, cells);
+                int cost = HexPathFinder.GetCost(path);
+
+                if(cost - distance >= diff)
+                {
+                    path.ForEach(x => x.SetBuilding((x.building == Building.None) ? Building.Road : x.building));
+                }
             }
         }
     }
