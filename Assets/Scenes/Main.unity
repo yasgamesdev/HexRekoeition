@@ -156,9 +156,10 @@ MonoBehaviour:
   chunkPrefab: {fileID: 1142677172071252, guid: 60061ab34c0b6a84c9e1cfb32fdde099,
     type: 2}
   pathPrefab: {fileID: 1869417960347736, guid: 8d2649528261dcc4e9972a7e2b45ee4d, type: 2}
-  buildingsPrefab: {fileID: 1454245940076354, guid: c0b1a4cf125ce0644b9700de7db2d491,
+  castlePrefab: {fileID: 1051831289408832, guid: b1c3b55f2fa8c2b4a9f937f5f5a36d2f,
     type: 2}
-  roadPrefab: {fileID: 1747624549451366, guid: b109dbed4810dd74992bcc272c009b8b, type: 2}
+  townPrefab: {fileID: 1555900058627868, guid: 76ca45fb1e9ce6841b765207f6493aa8, type: 2}
+  roadPrefab: {fileID: 1472564137507070, guid: ad8c2164d3abdc4428c166f685ddb1de, type: 2}
 --- !u!1 &618854346
 GameObject:
   m_ObjectHideFlags: 0

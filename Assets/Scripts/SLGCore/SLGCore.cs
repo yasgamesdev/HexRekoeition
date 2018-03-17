@@ -3,27 +3,21 @@ using System.Collections.Generic;
 
 public class SLGCore
 {
-    public int chunkCountX { get; private set; }
-    public int chunkCountZ { get; private set; }
-
     public int width { get; private set; }
     public int height { get; private set; }
 
     HexGrid grid;
 
-    public SLGCore(int chunkCountX, int chunkCountZ, int chunkSizeX, int chunkSizeZ)
+    public SLGCore(int width, int height)
     {
-        this.chunkCountX = chunkCountX;
-        this.chunkCountZ = chunkCountZ;
-
-        width = chunkCountX * chunkSizeX;
-        height = chunkCountZ * chunkSizeZ;
+        this.width = width;
+        this.height = height;
 
         grid = new HexGrid(width, height);
     }
 
-    public HexCell GetHexCell(int x, int y)
+    public HexCell GetHexCell(int x, int z)
     {
-        return grid.GetHexCell(x + y * width);
+        return grid.GetHexCell(x + z * width);
     }
 }
