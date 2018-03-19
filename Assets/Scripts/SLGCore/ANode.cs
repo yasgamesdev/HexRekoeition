@@ -17,14 +17,14 @@ public class ANode
         }
     }
     public ANode parent;
-    public HexCell cell;
+    public Province province;
 
-    public ANode(int x, int z, HexCell cell)
+    public ANode(int x, int z, Province province)
     {
         state = ANodeState.None;
         this.x = x;
         this.z = z;
-        this.cell = cell;
+        this.province = province;
     }
 }
 

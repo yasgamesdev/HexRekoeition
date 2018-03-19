@@ -5,12 +5,12 @@ using System.Linq;
 public class HexPathFinder
 {
     public const int RoadCost = 1;
-    public const int LandCost = 3;
-    public const int SeaCost = 9;
+    public const int LandCost = 4;
+    public const int SeaCost = 8;
 
     static ANode[] nodes;
 
-    public static List<HexCell> GetPath(HexCell fromCell, HexCell toCell, int width, int height, HexCell[] cells)
+    public static List<Province> GetPath(Province fromProvince, Province toProvince, int width, int height, List<Province> provinces)
     {
         if (nodes == null)
         {
@@ -19,7 +19,7 @@ public class HexPathFinder
             {
                 for (int x = 0; x < width; x++)
                 {
-                    nodes[x + z * width] = new ANode(x, z, cells[x + z * width]);
+                    nodes[x + z * width] = new ANode(x, z, provinces[x + z * width]);
                 }
             }
         }
@@ -30,13 +30,13 @@ public class HexPathFinder
             node.parent = null;
         }
 
-        nodes[fromCell.i].C = 0;
-        nodes[fromCell.i].H = HexCell.GetDistance(fromCell, toCell);
-        nodes[fromCell.i].state = ANodeState.Open;
+        nodes[fromProvince.i].C = 0;
+        nodes[fromProvince.i].H = Province.GetDistance(fromProvince, toProvince);
+        nodes[fromProvince.i].state = ANodeState.Open;
 
         while (true)
         {
-            if (nodes[toCell.i].state == ANodeState.Open)
+            if (nodes[toProvince.i].state == ANodeState.Open)
             {
                 break;
             }
@@ -46,50 +46,50 @@ public class HexPathFinder
                 ANode minNode = nodes.Where(x => x.state == ANodeState.Open && x.S == minS).OrderBy(x => x.C).ToArray()[0];
                 minNode.state = ANodeState.Close;
 
-                OpenNode(minNode.x + (minNode.z % 2), minNode.z + 1, nodes, minNode, toCell, width, height, cells);
-                OpenNode(minNode.x + 1, minNode.z, nodes, minNode, toCell, width, height, cells);
-                OpenNode(minNode.x + (minNode.z % 2), minNode.z - 1, nodes, minNode, toCell, width, height, cells);
-                OpenNode(minNode.x - ((minNode.z + 1) % 2), minNode.z - 1, nodes, minNode, toCell, width, height, cells);
-                OpenNode(minNode.x - 1, minNode.z, nodes, minNode, toCell, width, height, cells);
-                OpenNode(minNode.x - ((minNode.z + 1) % 2), minNode.z + 1, nodes, minNode, toCell, width, height, cells);
+                OpenNode(minNode.x + (minNode.z % 2), minNode.z + 1, nodes, minNode, toProvince, width, height, provinces);
+                OpenNode(minNode.x + 1, minNode.z, nodes, minNode, toProvince, width, height, provinces);
+                OpenNode(minNode.x + (minNode.z % 2), minNode.z - 1, nodes, minNode, toProvince, width, height, provinces);
+                OpenNode(minNode.x - ((minNode.z + 1) % 2), minNode.z - 1, nodes, minNode, toProvince, width, height, provinces);
+                OpenNode(minNode.x - 1, minNode.z, nodes, minNode, toProvince, width, height, provinces);
+                OpenNode(minNode.x - ((minNode.z + 1) % 2), minNode.z + 1, nodes, minNode, toProvince, width, height, provinces);
             }
         }
 
-        return CreatePath(nodes[toCell.i]);
+        return CreatePath(nodes[toProvince.i]);
     }
 
-    static void OpenNode(int x, int z, ANode[] nodes, ANode minNode, HexCell toCell, int width, int height, HexCell[] cells)
+    static void OpenNode(int x, int z, ANode[] nodes, ANode minNode, Province toProvince, int width, int height, List<Province> provinces)
     {
         if (0 <= x && x < width && 0 <= z && z < height)
         {
             if (nodes[x + width * z].state == ANodeState.None)
             {
                 int index = x + width * z;
-                if(cells[index].building != Building.None)
+                if(provinces[index].isRoad)
                 {
                     nodes[index].C = minNode.C + RoadCost;
                 }
                 else
                 {
-                    nodes[index].C = minNode.C + (cells[index].terrain == Terrain.Sea ? SeaCost : LandCost);
+                    nodes[index].C = minNode.C + (provinces[index].terrain == TerrainType.Sea ? SeaCost : LandCost);
                 }
-                nodes[index].H = HexCell.GetDistance(minNode.cell, toCell);
+                nodes[index].H = Province.GetDistance(minNode.province, toProvince);
                 nodes[index].parent = minNode;
                 nodes[index].state = ANodeState.Open;
             }
         }
     }
 
-    static List<HexCell> CreatePath(ANode node)
+    static List<Province> CreatePath(ANode node)
     {
-        List<HexCell> cells = new List<HexCell>();
+        List<Province> provinces = new List<Province>();
 
         ANode targetNode = node;
         while(true)
         {
             if(targetNode != null)
             {
-                cells.Add(targetNode.cell);
+                provinces.Add(targetNode.province);
                 targetNode = targetNode.parent;
             }
             else
@@ -98,24 +98,24 @@ public class HexPathFinder
             }
         }
 
-        cells.Reverse();
+        provinces.Reverse();
 
-        return cells;
+        return provinces;
     }
 
-    public static int GetCost(List<HexCell> path)
+    public static int GetCost(List<Province> path)
     {
         int sum = 0;
 
-        foreach(HexCell cell in path)
+        foreach(Province province in path)
         {
-            if(cell.building == Building.Road)
+            if(province.isRoad)
             {
                 sum += RoadCost;
             }
             else
             {
-                sum += (cell.terrain == Terrain.Sea ? SeaCost : LandCost);
+                sum += (province.terrain == TerrainType.Sea ? SeaCost : LandCost);
             }
         }
 

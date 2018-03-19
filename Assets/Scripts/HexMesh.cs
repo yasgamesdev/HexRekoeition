@@ -4,16 +4,16 @@ using System.Linq;
 
 public class HexMesh : MonoBehaviour
 {
-    SLGCore core;
+    World world;
 
     public GameObject chunkPrefab;
     GameObject[] chunks;
 
     public GameObject castlePrefab, townPrefab, roadPrefab;
 
-    public void SetData(SLGCore core)
+    public void SetData(World world)
     {
-        this.core = core;
+        this.world = world;
 
         CreateChunks();
 
@@ -22,7 +22,7 @@ public class HexMesh : MonoBehaviour
 
     void CreateChunks()
     {
-        if(core != null)
+        if(world != null)
         {
             chunks = new GameObject[HexMetrics.chunkCountX * HexMetrics.chunkCountZ];
 
@@ -31,7 +31,7 @@ public class HexMesh : MonoBehaviour
                 for (int x = 0; x < HexMetrics.chunkCountX; x++)
                 {
                     GameObject chunk = chunks[i++] = Instantiate(chunkPrefab, transform);
-                    chunk.GetComponent<HexMeshChunk>().Init(x, z, core);
+                    chunk.GetComponent<HexMeshChunk>().Init(x, z, world);
                 }
             }
         }
@@ -39,13 +39,13 @@ public class HexMesh : MonoBehaviour
 
     void CreateBuilding()
     {
-        for (int z = 0; z < core.height; z++)
+        for (int z = 0; z < world.height; z++)
         {
-            for (int x = 0; x < core.width; x++)
+            for (int x = 0; x < world.width; x++)
             {
-                HexCell cell = core.GetHexCell(x, z);
+                Province province = world.GetProvince(x, z);
 
-                if (cell.building == Building.Castle)
+                if (province.children.Count > 0 && province.children[0].type == PlaceType.Castle)
                 {
                     Vector3 center;
                     center.x = (x + z * 0.5f - z / 2) * (HexMetrics.innerRadius * 2f);
@@ -56,7 +56,7 @@ public class HexMesh : MonoBehaviour
                     obj.transform.localPosition = center;
                     obj.transform.localEulerAngles = new Vector3(90, 0, 0);
                 }
-                else if(cell.building == Building.Town)
+                else if(province.children.Count > 0 && province.children[0].type == PlaceType.Town)
                 {
                     Vector3 center;
                     center.x = (x + z * 0.5f - z / 2) * (HexMetrics.innerRadius * 2f);
@@ -67,7 +67,7 @@ public class HexMesh : MonoBehaviour
                     obj.transform.localPosition = center;
                     obj.transform.localEulerAngles = new Vector3(90, 0, 0);
                 }
-                else if(cell.building == Building.Road)
+                else if(province.isRoad)
                 {
                     Vector3 center;
                     center.x = (x + z * 0.5f - z / 2) * (HexMetrics.innerRadius * 2f);
@@ -82,21 +82,9 @@ public class HexMesh : MonoBehaviour
         }
     }
 
-    bool IsSeaTerrain(int x, int z)
-    {
-        if (0 <= x && x < core.width && 0 <= z && z < core.height)
-        {
-            return core.GetHexCell(x, z).terrain == Terrain.Sea;
-        }
-        else
-        {
-            return false;
-        }
-    }
-
     private void Update()
     {
-        if (core != null & Input.GetMouseButtonDown(0))
+        if (world != null & Input.GetMouseButtonDown(0))
         {
             Ray inputRay = Camera.main.ScreenPointToRay(Input.mousePosition);
             RaycastHit hit;
@@ -131,19 +119,19 @@ public class HexMesh : MonoBehaviour
                     }
                 }
 
-                int index = iX + iZ * core.width + iZ / 2;
+                int index = iX + iZ * world.width + iZ / 2;
                 //Debug.Log(index + ", " + iX + ", " + iZ);
 
-                int _x = index % core.width;
-                int _z = index / core.width;
+                int _x = index % world.width;
+                int _z = index / world.width;
 
                 Vector3 center;
                 center.x = (_x + _z * 0.5f - _z / 2) * (HexMetrics.innerRadius * 2f);
                 center.y = 1.0f;
                 center.z = _z * (HexMetrics.outerRadius * 1.5f);
 
-                HexCell cell = core.GetHexCell(_x, _z);
-                Debug.Log(cell.x + ", " + cell.z);
+                Province province = world.GetProvince(_x, _z);
+                Debug.Log(province.x + ", " + province.z);
             }
         }
     }

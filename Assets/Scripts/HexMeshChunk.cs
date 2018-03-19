@@ -12,13 +12,13 @@ public class HexMeshChunk : MonoBehaviour
     MeshCollider meshCollider;
 
     int chunkIndexX, chunkIndexZ;
-    SLGCore core;
+    World world;
 
-    public void Init(int chunkIndexX, int chunkIndexZ, SLGCore core)
+    public void Init(int chunkIndexX, int chunkIndexZ, World world)
     {
         this.chunkIndexX = chunkIndexX;
         this.chunkIndexZ = chunkIndexZ;
-        this.core = core;
+        this.world = world;
 
         GetComponent<MeshFilter>().mesh = hexMesh = new Mesh();
         meshCollider = gameObject.AddComponent<MeshCollider>();
@@ -32,7 +32,7 @@ public class HexMeshChunk : MonoBehaviour
 
     public void Triangulate()
     {
-        if (core != null)
+        if (world != null)
         {
             hexMesh.Clear();
             vertices.Clear();
@@ -55,7 +55,7 @@ public class HexMeshChunk : MonoBehaviour
                             center + HexMetrics.corners[i],
                             center + HexMetrics.corners[i + 1]
                         );
-                        AddTriangleColor(core.GetHexCell(x, z).terrain == Terrain.Sea ? Color.blue : Color.green);
+                        AddTriangleColor(world.GetProvince(x, z).terrain == TerrainType.Sea ? Color.blue : Color.green);
                     }
                 }
             }

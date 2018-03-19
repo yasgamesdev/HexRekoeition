@@ -4,15 +4,15 @@ using UnityEngine;
 
 public class GameInstance : SingletonMonoBehaviour<GameInstance>
 {
-    SLGCore core;
+    World world;
 	// Use this for initialization
 	void Start () {
-        core = new SLGCore(HexMetrics.chunkCountX * HexMetrics.chunkSizeX, HexMetrics.chunkCountZ * HexMetrics.chunkSizeZ);
+        world = new World(HexMetrics.chunkCountX * HexMetrics.chunkSizeX, HexMetrics.chunkCountZ * HexMetrics.chunkSizeZ);
 
-        GameObject drawer = GameObject.Find("HexMesh");
-        if(drawer != null)
+        GameObject hexMesh = GameObject.Find("HexMesh");
+        if(hexMesh != null)
         {
-            drawer.GetComponent<HexMesh>().SetData(core);
+            hexMesh.GetComponent<HexMesh>().SetData(world);
         }
 	}
 	
