@@ -21,4 +21,14 @@ public class Place
     {
         children.Add(child);
     }
+
+    public void AddUnit(Unit unit)
+    {
+        units.Add(unit);
+    }
+
+    public void RemoveUnit(Unit unit)
+    {
+        units.Remove(unit);
+    }
 }
