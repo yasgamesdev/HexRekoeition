@@ -90,7 +90,7 @@ public class HexMesh : MonoBehaviour
             RaycastHit hit;
             if (Physics.Raycast(inputRay, out hit))
             {
-                Vector3 position = position = transform.InverseTransformPoint(hit.point);
+                Vector3 position = transform.InverseTransformPoint(hit.point);
 
                 float x = position.x / (HexMetrics.innerRadius * 2f);
                 float y = -x;
@@ -120,7 +120,6 @@ public class HexMesh : MonoBehaviour
                 }
 
                 int index = iX + iZ * world.width + iZ / 2;
-                //Debug.Log(index + ", " + iX + ", " + iZ);
 
                 int _x = index % world.width;
                 int _z = index / world.width;

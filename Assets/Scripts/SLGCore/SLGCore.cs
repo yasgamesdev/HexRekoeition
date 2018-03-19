@@ -12,7 +12,7 @@ public class SLGCore
         world = new World(width, height);
         units = new Units();
 
-        units.CreatePerson(true, world.children.Cast<Province>().ToList().Where(x => x.children.Count > 0).ToList()[0]);
+        units.CreatePerson(true, world.children.Cast<Province>().ToList().Where(x => x.children.Count > 0).ToList()[20]);
     }
 
     public World GetWorld()

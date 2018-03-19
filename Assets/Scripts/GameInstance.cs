@@ -5,7 +5,6 @@ using UnityEngine;
 
 public class GameInstance : SingletonMonoBehaviour<GameInstance>
 {
-    public GameObject personPrefab;
     SLGCore core;
 	// Use this for initialization
 	void Start () {
@@ -17,13 +16,10 @@ public class GameInstance : SingletonMonoBehaviour<GameInstance>
             hexMesh.GetComponent<HexMesh>().SetData(core.GetWorld());
         }
 
-        foreach(Province province in core.GetWorld().children.Where(x => x.units.Count > 0))
+        GameObject unitManager = GameObject.Find("UnitManager");
+        if (unitManager != null)
         {
-            foreach(Unit unit in province.units)
-            {
-                GameObject obj = Instantiate(personPrefab);
-                obj.GetComponent<WorldPerson>().Init((Person)unit);
-            }
+            unitManager.GetComponent<UnitManager>().SetData(core);
         }
 	}
 	

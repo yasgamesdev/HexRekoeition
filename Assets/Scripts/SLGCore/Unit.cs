@@ -9,6 +9,8 @@ public class Unit
     public HexDirection direction { get; private set; }
     public int moveProgress { get; private set; }
 
+    public Queue<Command> commands { get; private set; } = new Queue<Command>();
+
     public Unit(bool isPlayer, Place place)
     {
         this.isPlayer = isPlayer;
