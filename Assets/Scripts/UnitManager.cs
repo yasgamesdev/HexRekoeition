@@ -33,17 +33,27 @@ public class UnitManager : MonoBehaviour {
     }
 
     // Update is called once per frame
+    int updateSpeed = 6;
+    int updateCounter = 0;
+    
     void Update()
     {
         SetPlayerPath();
 
         if(playerPerson.person.commands.Count > 0)
         {
-            Move move = (Move)playerPerson.person.commands.Dequeue();
-            Person person = playerPerson.person;
-            person.place.RemoveUnit(person);
-            move.province.AddUnit(person);
-            person.SetPlace(move.province);
+            updateCounter++;
+            if(updateCounter >= updateSpeed)
+            {
+                updateCounter = 0;
+
+                bool finish = playerPerson.person.commands.Peek().Update(playerPerson.person);
+
+                if (finish)
+                {
+                    playerPerson.person.commands.Dequeue();
+                }
+            }
         }
     }
 

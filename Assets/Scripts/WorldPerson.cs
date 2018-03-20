@@ -24,14 +24,5 @@ public class WorldPerson : MonoBehaviour
             center.z = province.z * (HexMetrics.outerRadius * 1.5f);
             transform.localPosition = center;
         }
-
-        if(Input.GetMouseButtonDown(0))
-        {
-            Province province = (Province)person.place;
-            province.RemoveUnit(person);
-            Province nextProvicne = (Province)province.parent.children[province.i + 1];
-            nextProvicne.AddUnit(person);
-            person.SetPlace(nextProvicne);
-        }
     }
 }
