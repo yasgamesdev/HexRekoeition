@@ -105,20 +105,18 @@ public class HexPathFinder
 
     public static int GetCost(List<Province> path)
     {
-        int sum = 0;
+        return path.Sum(x => GetCost(x));
+    }
 
-        foreach(Province province in path)
+    public static int GetCost(Province province)
+    {
+        if(province.isRoad)
         {
-            if(province.isRoad)
-            {
-                sum += RoadCost;
-            }
-            else
-            {
-                sum += (province.terrain == TerrainType.Sea ? SeaCost : LandCost);
-            }
+            return RoadCost;
         }
-
-        return sum;
+        else
+        {
+            return province.terrain == TerrainType.Sea ? SeaCost : LandCost;
+        }
     }
 }

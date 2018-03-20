@@ -33,7 +33,7 @@ public class UnitManager : MonoBehaviour {
     }
 
     // Update is called once per frame
-    int updateSpeed = 6;
+    const int updateSpeed = 1;
     int updateCounter = 0;
     
     void Update()
