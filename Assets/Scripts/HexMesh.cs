@@ -39,13 +39,13 @@ public class HexMesh : MonoBehaviour
 
     void CreateBuilding()
     {
-        for (int z = 0; z < world.height; z++)
+        for (int z = 0; z < world.Height; z++)
         {
-            for (int x = 0; x < world.width; x++)
+            for (int x = 0; x < world.Width; x++)
             {
                 Province province = world.GetProvince(x, z);
 
-                if (province.children.Count > 0 && province.children[0].type == PlaceType.Castle)
+                if (province.ChildPlaces.Count > 0 && province.ChildPlaces[0].Type == PlaceType.Castle)
                 {
                     Vector3 center;
                     center.x = (x + z * 0.5f - z / 2) * (HexMetrics.innerRadius * 2f);
@@ -56,7 +56,7 @@ public class HexMesh : MonoBehaviour
                     obj.transform.localPosition = center;
                     obj.transform.localEulerAngles = new Vector3(90, 0, 0);
                 }
-                else if(province.children.Count > 0 && province.children[0].type == PlaceType.Town)
+                else if(province.ChildPlaces.Count > 0 && province.ChildPlaces[0].Type == PlaceType.Town)
                 {
                     Vector3 center;
                     center.x = (x + z * 0.5f - z / 2) * (HexMetrics.innerRadius * 2f);
@@ -67,7 +67,7 @@ public class HexMesh : MonoBehaviour
                     obj.transform.localPosition = center;
                     obj.transform.localEulerAngles = new Vector3(90, 0, 0);
                 }
-                else if(province.isRoad)
+                else if(province.IsRoad)
                 {
                     Vector3 center;
                     center.x = (x + z * 0.5f - z / 2) * (HexMetrics.innerRadius * 2f);
@@ -119,10 +119,10 @@ public class HexMesh : MonoBehaviour
                     }
                 }
 
-                int index = iX + iZ * world.width + iZ / 2;
+                int index = iX + iZ * world.Width + iZ / 2;
 
-                int _x = index % world.width;
-                int _z = index / world.width;
+                int _x = index % world.Width;
+                int _z = index / world.Width;
 
                 Vector3 center;
                 center.x = (_x + _z * 0.5f - _z / 2) * (HexMetrics.innerRadius * 2f);

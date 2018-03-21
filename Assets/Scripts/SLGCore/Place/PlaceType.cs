@@ -3,5 +3,6 @@
     World,
     Province,
     Castle,
-    Town
+    Town,
+    House,
 }

@@ -55,7 +55,7 @@ public class HexMeshChunk : MonoBehaviour
                             center + HexMetrics.corners[i],
                             center + HexMetrics.corners[i + 1]
                         );
-                        AddTriangleColor(world.GetProvince(x, z).terrain == TerrainType.Sea ? Color.blue : Color.green);
+                        AddTriangleColor(world.GetProvince(x, z).Terrain == TerrainType.Sea ? Color.blue : Color.green);
                     }
                 }
             }

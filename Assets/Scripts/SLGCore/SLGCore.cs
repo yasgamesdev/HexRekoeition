@@ -12,11 +12,18 @@ public class SLGCore
         world = new World(width, height);
         units = new Units();
 
-        units.CreatePerson(true, world.children.Cast<Province>().ToList().Where(x => x.children.Count > 0).ToList()[20]);
+        Town playerTown = world.Towns[0];
+
+        units.CreatePerson(true, playerTown, playerTown.ParentPlace);
     }
 
     public World GetWorld()
     {
         return world;
+    }
+
+    public void ProgressQuarterDay()
+    {
+        units.persons.ForEach(x => x.ExecCommand());
     }
 }

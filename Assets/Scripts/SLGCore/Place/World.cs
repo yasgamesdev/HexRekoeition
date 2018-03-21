@@ -4,13 +4,16 @@ using System.Linq;
 
 public class World : Place
 {
-    public int width { get; private set; }
-    public int height { get; private set; }
+    public int Width { get; private set; }
+    public int Height { get; private set; }
+
+    public List<Castle> Castles { get; private set; } = new List<Castle>();
+    public List<Town> Towns { get; private set; } = new List<Town>();
 
     public World(int width, int height) : base(PlaceType.World, null)
     {
-        this.width = width;
-        this.height = height;
+        this.Width = width;
+        this.Height = height;
 
         float[,] noise = NoiseGenerator.Generate(width, height, 6.0f, 6.0f * 0.75f, 2.0f, 1.0f);
 
@@ -20,7 +23,7 @@ public class World : Place
             {
                 Province province = new Province(x, z, width, this);
                 province.SetTerrain(noise[x, z] >= 0 ? TerrainType.Land : TerrainType.Sea);
-                children.Add(province);
+                ChildPlaces.Add(province);
             }
         }
 
@@ -29,7 +32,7 @@ public class World : Place
 
     public Province GetProvince(int x, int z)
     {
-        return (Province)children[x + z * width];
+        return (Province)ChildPlaces[x + z * Width];
     }
 
     void SetBuilding()
@@ -45,8 +48,8 @@ public class World : Place
 
     void SetCastle(int castleCount, int minDistance)
     {
-        List<Province> provinces = children.Cast<Province>().ToList();
-        List<Province> possibleProvinces = provinces.Where(x => x.terrain == TerrainType.Land).ToList();
+        List<Province> provinces = ChildPlaces.Cast<Province>().ToList();
+        List<Province> possibleProvinces = provinces.Where(x => x.Terrain == TerrainType.Land).ToList();
 
         Random rand = new Random();
 
@@ -60,7 +63,9 @@ public class World : Place
             {
                 int index = rand.Next(possibleProvinces.Count);
                 Province province = possibleProvinces[index];
-                province.AddChild(new Castle(province));
+                Castle castle = new Castle(province);
+                province.AddPlace(castle);
+                Castles.Add(castle);
                 possibleProvinces.RemoveAll(x => Province.GetDistance(province, x) <= minDistance);
             }
         }
@@ -68,8 +73,8 @@ public class World : Place
 
     void SetTown(int townCount, int minDistance)
     {
-        List<Province> provinces = children.Cast<Province>().ToList();
-        List<Province> possibleProvinces = provinces.Where(x => x.terrain == TerrainType.Land && x.children.Count == 0).ToList();
+        List<Province> provinces = ChildPlaces.Cast<Province>().ToList();
+        List<Province> possibleProvinces = provinces.Where(x => x.Terrain == TerrainType.Land && x.ChildPlaces.Count == 0).ToList();
 
         Random rand = new Random();
 
@@ -83,7 +88,9 @@ public class World : Place
             {
                 int index = rand.Next(possibleProvinces.Count);
                 Province province = possibleProvinces[index];
-                province.AddChild(new Town(province));
+                Town town = new Town(province);
+                province.AddPlace(town);
+                Towns.Add(town);
                 possibleProvinces.RemoveAll(x => Province.GetDistance(province, x) <= minDistance);
             }
         }
@@ -91,8 +98,8 @@ public class World : Place
 
     void SetRoad()
     {
-        List<Province> provinces = children.Cast<Province>().ToList();
-        List<Province> castleOrTownProvinces = provinces.Where(x => x.children.Count > 0).ToList();
+        List<Province> provinces = ChildPlaces.Cast<Province>().ToList();
+        List<Province> castleOrTownProvinces = provinces.Where(x => x.ChildPlaces.Count > 0).ToList();
 
         List<Province> setRoadProvinces = new List<Province>();
         setRoadProvinces.Add(castleOrTownProvinces[0]);
@@ -133,15 +140,15 @@ public class World : Place
 
                 setRoadProvinces.Add(minNotSetRoadProvince);
 
-                HexPathFinder.GetPath(minNotSetRoadProvince, minSetRoadProvince, width, height, provinces).ForEach(x => x.SetIsRoad(true));
+                HexPathFinder.GetPath(minNotSetRoadProvince, minSetRoadProvince, Width, Height, provinces).ForEach(x => x.SetIsRoad(true));
             }
         }
     }
 
     void SetSecondaryRoad(int range, int diff)
     {
-        List<Province> provinces = children.Cast<Province>().ToList();
-        List<Province> castleOrTownProvinces = provinces.Where(x => x.children.Count > 0).ToList();
+        List<Province> provinces = ChildPlaces.Cast<Province>().ToList();
+        List<Province> castleOrTownProvinces = provinces.Where(x => x.ChildPlaces.Count > 0).ToList();
 
         foreach (Province province in castleOrTownProvinces)
         {
@@ -151,8 +158,8 @@ public class World : Place
             {
                 int distance = Province.GetDistance(province, closeProvince);
 
-                List<Province> path = HexPathFinder.GetPath(province, closeProvince, width, height, provinces);
-                int cost = HexPathFinder.GetCost(path);
+                List<Province> path = HexPathFinder.GetPath(province, closeProvince, Width, Height, provinces);
+                int cost = HexPathFinder.GetMovementCost(path);
 
                 if (cost - distance >= diff)
                 {

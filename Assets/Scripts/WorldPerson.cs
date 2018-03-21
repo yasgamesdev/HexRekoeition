@@ -14,11 +14,11 @@ public class WorldPerson : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (person.place.type == PlaceType.Province)
+        if (person.CurPlace.Type == PlaceType.Province)
         {
-            Province province = (Province)person.place;
+            Province province = (Province)person.CurPlace;
 
-            if (person.moveProgress == 0)
+            if (person.NextProvince == null)
             {
                 Vector3 center;
                 center.x = (province.x + province.z * 0.5f - province.z / 2) * (HexMetrics.innerRadius * 2f);
@@ -28,7 +28,7 @@ public class WorldPerson : MonoBehaviour
             }
             else
             {
-                Move move = (Move)person.commands.Peek();
+                MoveProvince moveProvince = (MoveProvince)person.GetPeekCommand();
 
                 Vector3 from;
                 from.x = (province.x + province.z * 0.5f - province.z / 2) * (HexMetrics.innerRadius * 2f);
@@ -36,12 +36,12 @@ public class WorldPerson : MonoBehaviour
                 from.z = province.z * (HexMetrics.outerRadius * 1.5f);
 
                 Vector3 to;
-                to.x = (move.province.x + move.province.z * 0.5f - move.province.z / 2) * (HexMetrics.innerRadius * 2f);
+                to.x = (moveProvince.province.x + moveProvince.province.z * 0.5f - moveProvince.province.z / 2) * (HexMetrics.innerRadius * 2f);
                 to.y = 0.2f;
-                to.z = move.province.z * (HexMetrics.outerRadius * 1.5f);
+                to.z = moveProvince.province.z * (HexMetrics.outerRadius * 1.5f);
 
-                int totalCost = HexPathFinder.GetCost(move.province);
-                float percent = (float)person.moveProgress / (float)totalCost;
+                int totalCost = moveProvince.province.GetMovementCost();
+                float percent = (float)person.MoveProgress / (float)totalCost;
 
                 Vector3 center = from + (to - from) * percent;
                 transform.localPosition = center;

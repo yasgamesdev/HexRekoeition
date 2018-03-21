@@ -16,17 +16,20 @@ public class UnitManager : MonoBehaviour {
     {
         this.core = core;
 
-        foreach (Province province in core.GetWorld().children.Where(x => x.units.Count > 0))
+        foreach (Province province in core.GetWorld().ChildPlaces.Where(x => x.StayUnits.Count > 0))
         {
-            foreach (Unit unit in province.units)
+            foreach (Unit unit in province.StayUnits)
             {
-                GameObject obj = Instantiate(personPrefab, transform);
-                obj.GetComponent<WorldPerson>().Init((Person)unit);
-                units.Add(obj);
-
-                if(unit.isPlayer)
+                if (unit is Person)
                 {
-                    playerPerson = obj.GetComponent<WorldPerson>();
+                    GameObject obj = Instantiate(personPrefab, transform);
+                    obj.GetComponent<WorldPerson>().Init((Person)unit);
+                    units.Add(obj);
+
+                    if(((Person)unit).IsPlayer)
+                    {
+                        playerPerson = obj.GetComponent<WorldPerson>();
+                    }
                 }
             }
         }
@@ -40,26 +43,18 @@ public class UnitManager : MonoBehaviour {
     {
         SetPlayerPath();
 
-        if(playerPerson.person.commands.Count > 0)
+        updateCounter++;
+        if (updateCounter >= updateSpeed)
         {
-            updateCounter++;
-            if(updateCounter >= updateSpeed)
-            {
-                updateCounter = 0;
+            updateCounter = 0;
 
-                bool finish = playerPerson.person.commands.Peek().Update(playerPerson.person);
-
-                if (finish)
-                {
-                    playerPerson.person.commands.Dequeue();
-                }
-            }
+            core.ProgressQuarterDay();
         }
     }
 
     void SetPlayerPath()
     {
-        if (core != null && playerPerson != null && playerPerson.person.commands.Count == 0 && Input.GetMouseButtonDown(1))
+        if (core != null && playerPerson != null && !playerPerson.person.HaveCommand() && Input.GetMouseButtonDown(1))
         {
             Ray inputRay = Camera.main.ScreenPointToRay(Input.mousePosition);
             RaycastHit hit;
@@ -94,10 +89,10 @@ public class UnitManager : MonoBehaviour {
                     }
                 }
 
-                int index = iX + iZ * core.world.width + iZ / 2;
+                int index = iX + iZ * core.world.Width + iZ / 2;
 
-                int _x = index % core.world.width;
-                int _z = index / core.world.width;
+                int _x = index % core.world.Width;
+                int _z = index / core.world.Width;
 
                 Vector3 center;
                 center.x = (_x + _z * 0.5f - _z / 2) * (HexMetrics.innerRadius * 2f);
@@ -106,13 +101,13 @@ public class UnitManager : MonoBehaviour {
 
                 Province province = core.world.GetProvince(_x, _z);
 
-                Province fromProvince = (Province)playerPerson.person.place;
-                List<Province> path = HexPathFinder.GetPath(fromProvince, province, core.world.width, core.world.height, core.world.children.Cast<Province>().ToList());
+                Province fromProvince = (Province)playerPerson.person.CurPlace;
+                List<Province> path = HexPathFinder.GetPath(fromProvince, province, core.world.Width, core.world.Height, core.world.ChildPlaces.Cast<Province>().ToList());
                 if (path.Count > 0)
                 {
                     for (int i = 1; i < path.Count; i++)
                     {
-                        playerPerson.person.commands.Enqueue(new Move(path[i]));
+                        playerPerson.person.EnqueueCommand(new MoveProvince(path[i]));
                     }
                 }
             }

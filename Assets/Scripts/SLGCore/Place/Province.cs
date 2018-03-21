@@ -8,8 +8,8 @@ public class Province : Place
     public int z { get; private set; }
     public int i { get; private set; }
 
-    public TerrainType terrain { get; private set; }
-    public bool isRoad { get; private set; }
+    public TerrainType Terrain { get; private set; }
+    public bool IsRoad { get; private set; }
 
     public int X
     {
@@ -46,12 +46,12 @@ public class Province : Place
 
     public void SetTerrain(TerrainType terrain)
     {
-        this.terrain = terrain;
+        Terrain = terrain;
     }
 
     public void SetIsRoad(bool isRoad)
     {
-        this.isRoad = isRoad;
+        IsRoad = isRoad;
     }
 
     public static int GetDistance(Province fromProvince, Province toProvince)
@@ -61,5 +61,17 @@ public class Province : Place
         int dZ = Math.Abs(fromProvince.Z - toProvince.Z);
 
         return (dX + dY + dZ) / 2;
+    }
+
+    public int GetMovementCost()
+    {
+        if (IsRoad)
+        {
+            return Terrain == TerrainType.Sea ? MovementCost.RoadLand : MovementCost.RoadLand;
+        }
+        else
+        {
+            return Terrain == TerrainType.Sea ? MovementCost.Sea : MovementCost.Land;
+        }
     }
 }

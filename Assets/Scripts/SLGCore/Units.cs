@@ -6,14 +6,9 @@ public class Units
 {
     public List<Person> persons = new List<Person>();
 
-    public Person CreatePerson(bool isPlayer, Place place)
+    public Person CreatePerson(bool isPlayer, CastleOrTownBase homeCastleOrTown, Place curPlace)
     {
-        Person person = new Person(isPlayer, place);
-
-        if(place != null)
-        {
-            place.AddUnit(person);
-        }
+        Person person = new Person(isPlayer, homeCastleOrTown, curPlace);
 
         persons.Add(person);
 
