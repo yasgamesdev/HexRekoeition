@@ -31,4 +31,9 @@ public class Place
     {
         StayUnits.Remove(unit);
     }
+
+    public bool ContainPlaceType(PlaceType childPlayType)
+    {
+        return ChildPlaces.Any(x => x.Type == childPlayType);
+    }
 }

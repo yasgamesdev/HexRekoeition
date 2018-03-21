@@ -10,32 +10,18 @@ public class UnitManager : MonoBehaviour {
     public GameObject personPrefab;
     List<GameObject> units = new List<GameObject>();
 
-    public WorldPerson playerPerson;
+    WorldPerson playerPerson;
 
-    public void SetData(SLGCore core)
+    private void Start()
     {
-        this.core = core;
+        core = GameObject.Find("GameInstance").GetComponent<GameInstance>().GetSLGCore();
 
-        foreach (Province province in core.GetWorld().ChildPlaces.Where(x => x.StayUnits.Count > 0))
-        {
-            foreach (Unit unit in province.StayUnits)
-            {
-                if (unit is Person)
-                {
-                    GameObject obj = Instantiate(personPrefab, transform);
-                    obj.GetComponent<WorldPerson>().Init((Person)unit);
-                    units.Add(obj);
-
-                    if(((Person)unit).IsPlayer)
-                    {
-                        playerPerson = obj.GetComponent<WorldPerson>();
-                    }
-                }
-            }
-        }
+        GameObject obj = Instantiate(personPrefab, transform);
+        obj.GetComponent<WorldPerson>().Init(core.GetPlayerPerson());
+        units.Add(obj);
+        playerPerson = obj.GetComponent<WorldPerson>();
     }
 
-    // Update is called once per frame
     const int updateSpeed = 1;
     int updateCounter = 0;
     

@@ -4,7 +4,7 @@ using System.Linq;
 
 public class Units
 {
-    public List<Person> persons = new List<Person>();
+    List<Person> persons = new List<Person>();
 
     public Person CreatePerson(bool isPlayer, CastleOrTownBase homeCastleOrTown, Place curPlace)
     {
@@ -13,5 +13,15 @@ public class Units
         persons.Add(person);
 
         return person;
+    }
+
+    public void ProgressQuarterDay()
+    {
+        persons.ForEach(x => x.ExecCommand());
+    }
+
+    public Person GetPlayerPerson()
+    {
+        return persons.First(x => x.IsPlayer);
     }
 }

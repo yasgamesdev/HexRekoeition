@@ -24,6 +24,11 @@ public class SLGCore
 
     public void ProgressQuarterDay()
     {
-        units.persons.ForEach(x => x.ExecCommand());
+        units.ProgressQuarterDay();
+    }
+
+    public Person GetPlayerPerson()
+    {
+        return units.GetPlayerPerson();
     }
 }

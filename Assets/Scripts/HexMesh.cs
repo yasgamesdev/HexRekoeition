@@ -11,9 +11,9 @@ public class HexMesh : MonoBehaviour
 
     public GameObject castlePrefab, townPrefab, roadPrefab;
 
-    public void SetData(World world)
+    private void Start()
     {
-        this.world = world;
+        world = GameObject.Find("GameInstance").GetComponent<GameInstance>().GetSLGCore().world;
 
         CreateChunks();
 
