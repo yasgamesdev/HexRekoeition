@@ -55,7 +55,14 @@ public class HexMeshChunk : MonoBehaviour
                             center + HexMetrics.corners[i],
                             center + HexMetrics.corners[i + 1]
                         );
-                        AddTriangleColor(world.GetProvince(x, z).Terrain == TerrainType.Sea ? Color.blue : Color.green);
+                        //AddTriangleColor(world.GetProvince(x, z).Terrain == TerrainType.Sea ? Color.blue : Color.green);
+                        Castle castle = world.GetProvince(x, z).territoryCastle;
+                        Province castleProvince = (Province)castle.ParentPlace;
+                        Random.InitState(castleProvince.i);
+                        float r = Random.Range(0.0f, 1.0f);
+                        float g = Random.Range(0.0f, 1.0f);
+                        float b = Random.Range(0.0f, 1.0f);
+                        AddTriangleColor(world.GetProvince(x, z).Terrain == TerrainType.Sea ? Color.blue : new Color(r, g, b));
                     }
                 }
             }

@@ -48,7 +48,9 @@ public class World : Place
 
         SetSecondaryRoad(8, 12);
 
-        SetNeighboringCastles();
+        SetTerritory();
+
+        //SetNeighboringCastles();
     }
 
     void SetCastle(int castleCount, int minDistance)
@@ -171,6 +173,35 @@ public class World : Place
                     path.ForEach(x => x.SetIsRoad(true));
                 }
             }
+        }
+    }
+
+    void SetTerritory()
+    {
+        List<Province> provinces = ChildPlaces.Cast<Province>().ToList();
+
+        List<Province> castleProvinces = new List<Province>();
+        Castles.ForEach(x => castleProvinces.Add((Province)x.ParentPlace));
+
+        int range = 0;
+
+        while(provinces.Count > 0)
+        {
+            foreach(Province province in castleProvinces)
+            {
+                List<Province> closeProvinces = provinces.Where(x => range - 1 < Province.GetDistance(x, province) && Province.GetDistance(x, province) <= range).ToList();
+                foreach(Province closeProvince in closeProvinces)
+                {
+                    if(closeProvince.territoryCastle == null)
+                    {
+                        closeProvince.SetTerritoryCastle((Castle)province.ChildPlaces[0]);
+                        ((Castle)province.ChildPlaces[0]).AddTerritoryProvince(closeProvince);
+                    }
+                }
+            }
+
+            provinces.RemoveAll(x => x.territoryCastle != null);
+            range++;
         }
     }
 

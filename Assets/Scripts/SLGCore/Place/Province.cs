@@ -11,6 +11,8 @@ public class Province : Place
     public TerrainType Terrain { get; private set; }
     public bool IsRoad { get; private set; }
 
+    public Castle territoryCastle { get; private set; }
+
     public int X
     {
         get
@@ -52,6 +54,11 @@ public class Province : Place
     public void SetIsRoad(bool isRoad)
     {
         IsRoad = isRoad;
+    }
+
+    public void SetTerritoryCastle(Castle territoryCastle)
+    {
+        this.territoryCastle = territoryCastle;
     }
 
     public static int GetDistance(Province fromProvince, Province toProvince)
