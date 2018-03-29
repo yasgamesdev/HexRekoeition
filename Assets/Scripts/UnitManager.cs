@@ -16,10 +16,10 @@ public class UnitManager : MonoBehaviour {
     {
         core = GameObject.Find("GameInstance").GetComponent<GameInstance>().GetSLGCore();
 
-        GameObject obj = Instantiate(personPrefab, transform);
-        obj.GetComponent<WorldPerson>().Init(core.GetPlayerPerson());
-        units.Add(obj);
-        playerPerson = obj.GetComponent<WorldPerson>();
+        //GameObject obj = Instantiate(personPrefab, transform);
+        //obj.GetComponent<WorldPerson>().Init(core.GetPlayerPerson());
+        //units.Add(obj);
+        //playerPerson = obj.GetComponent<WorldPerson>();
     }
 
     const int updateSpeed = 1;
@@ -29,18 +29,20 @@ public class UnitManager : MonoBehaviour {
     {
         SetPlayerPath();
 
-        updateCounter++;
-        if (updateCounter >= updateSpeed)
-        {
-            updateCounter = 0;
+        //updateCounter++;
+        //if (updateCounter >= updateSpeed)
+        //{
+        //    updateCounter = 0;
 
-            core.ProgressQuarterDay();
-        }
+        //    core.ProgressQuarterDay();
+        //}
+
+
     }
 
     void SetPlayerPath()
     {
-        if (core != null && playerPerson != null && !playerPerson.person.HaveCommand() && Input.GetMouseButtonDown(1))
+        if (core != null && Input.GetMouseButtonDown(1))
         {
             Ray inputRay = Camera.main.ScreenPointToRay(Input.mousePosition);
             RaycastHit hit;
@@ -75,27 +77,37 @@ public class UnitManager : MonoBehaviour {
                     }
                 }
 
-                int index = iX + iZ * core.world.Width + iZ / 2;
+                int index = iX + iZ * core.GetWorld().Width + iZ / 2;
 
-                int _x = index % core.world.Width;
-                int _z = index / core.world.Width;
+                int _x = index % core.GetWorld().Width;
+                int _z = index / core.GetWorld().Width;
 
                 Vector3 center;
                 center.x = (_x + _z * 0.5f - _z / 2) * (HexMetrics.innerRadius * 2f);
                 center.y = 1.0f;
                 center.z = _z * (HexMetrics.outerRadius * 1.5f);
 
-                Province province = core.world.GetProvince(_x, _z);
+                Province province = core.GetWorld().GetProvince(_x, _z);
 
-                Province fromProvince = (Province)playerPerson.person.CurPlace;
-                List<Province> path = HexPathFinder.GetPath(fromProvince, province, core.world.Width, core.world.Height, core.world.ChildPlaces.Cast<Province>().ToList());
-                if (path.Count > 0)
+                if(province.ChildPlaces.Count > 0 && province.ChildPlaces[0] is Castle)
                 {
-                    for (int i = 1; i < path.Count; i++)
+                    Castle castle = (Castle)province.ChildPlaces[0];
+                    foreach(Castle neighbor in castle.GetNeighboringCastles())
                     {
-                        playerPerson.person.EnqueueCommand(new MoveProvince(path[i]));
+                        Province parentProvince = (Province)neighbor.ParentPlace;
+                        Debug.Log(parentProvince.x + ", " + parentProvince.z);
                     }
                 }
+
+                //Province fromProvince = (Province)playerPerson.person.CurPlace;
+                //List<Province> path = HexPathFinder.GetPath(fromProvince, province, core.world.Width, core.world.Height, core.world.ChildPlaces.Cast<Province>().ToList());
+                //if (path.Count > 0)
+                //{
+                //    for (int i = 1; i < path.Count; i++)
+                //    {
+                //        playerPerson.person.EnqueueCommand(new MoveProvince(path[i]));
+                //    }
+                //}
             }
         }
     }

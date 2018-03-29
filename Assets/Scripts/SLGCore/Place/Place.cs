@@ -9,7 +9,7 @@ public class Place
     public Place ParentPlace { get; private set; }
     public List<Place> ChildPlaces { get; private set; } = new List<Place>();
 
-    public List<Unit> StayUnits { get; private set; } = new List<Unit>();
+    public List<Person> StayPersons { get; private set; } = new List<Person>();
 
     public Place(PlaceType type, Place parentPlace)
     {
@@ -22,14 +22,14 @@ public class Place
         ChildPlaces.Add(place);
     }
 
-    public void AddStayUnit(Unit unit)
+    public void AddStayUnit(Person person)
     {
-        StayUnits.Add(unit);
+        StayPersons.Add(person);
     }
 
-    public void RemoveStayUnit(Unit unit)
+    public void RemoveStayUnit(Person person)
     {
-        StayUnits.Remove(unit);
+        StayPersons.Remove(person);
     }
 
     public bool ContainPlaceType(PlaceType childPlayType)

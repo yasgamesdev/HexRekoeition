@@ -17,10 +17,10 @@ public class BackButton : MonoBehaviour {
 
     public void Clicked()
     {
-        SLGCore core = GameObject.Find("GameInstance").GetComponent<GameInstance>().GetSLGCore();
-        Person playerPerson = core.GetPlayerPerson();
-        playerPerson.SetCurPlace(playerPerson.CurPlace.ParentPlace);
+        //SLGCore core = GameObject.Find("GameInstance").GetComponent<GameInstance>().GetSLGCore();
+        //Person playerPerson = core.GetPlayerPerson();
+        //playerPerson.SetCurPlace(playerPerson.CurPlace.ParentPlace);
 
-        SceneManager.LoadScene("World");
+        //SceneManager.LoadScene("World");
     }
 }

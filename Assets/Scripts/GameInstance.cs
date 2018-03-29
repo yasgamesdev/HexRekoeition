@@ -5,14 +5,14 @@ using UnityEngine;
 
 public class GameInstance : MonoBehaviour
 {
-    SLGCore core;
-
     private static GameInstance instance = null;
 
     public static GameInstance Instance
     {
         get { return instance; }
     }
+
+    SLGCore core;
 
     void Awake()
     {
@@ -32,6 +32,4 @@ public class GameInstance : MonoBehaviour
     {
         return core;
     }
-
-    
 }

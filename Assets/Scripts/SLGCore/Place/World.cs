@@ -10,40 +10,45 @@ public class World : Place
     public List<Castle> Castles { get; private set; } = new List<Castle>();
     public List<Town> Towns { get; private set; } = new List<Town>();
 
+    const int castleMinDistance = 4;
+    const int townMinDistance = 3;
+
     public World(int width, int height) : base(PlaceType.World, null)
     {
-        this.Width = width;
-        this.Height = height;
+        Width = width;
+        Height = height;
 
-        float[,] noise = NoiseGenerator.Generate(width, height, 6.0f, 6.0f * 0.75f, 2.0f, 1.0f);
+        SetTerrain();
+
+        SetBuilding();
+    }
+
+    void SetTerrain()
+    {
+        float[,] noise = NoiseGenerator.Generate(Width, Height, 6.0f, 6.0f * 0.75f, 2.0f, 1.0f);
 
         for (int z = 0; z < noise.GetLength(1); z++)
         {
             for (int x = 0; x < noise.GetLength(0); x++)
             {
-                Province province = new Province(x, z, width, this);
+                Province province = new Province(x, z, Width, this);
                 province.SetTerrain(noise[x, z] >= 0 ? TerrainType.Land : TerrainType.Sea);
                 ChildPlaces.Add(province);
             }
         }
-
-        SetBuilding();
-    }
-
-    public Province GetProvince(int x, int z)
-    {
-        return (Province)ChildPlaces[x + z * Width];
     }
 
     void SetBuilding()
     {
-        SetCastle(120, 4);
+        SetCastle(120, castleMinDistance);
 
-        SetTown(160, 3);
+        SetTown(160, townMinDistance);
 
         SetRoad();
 
-        SetSecondaryRoad(10, 6);
+        SetSecondaryRoad(8, 12);
+
+        SetNeighboringCastles();
     }
 
     void SetCastle(int castleCount, int minDistance)
@@ -167,5 +172,67 @@ public class World : Place
                 }
             }
         }
+    }
+
+    void SetNeighboringCastles()
+    {
+        //bool[] check = new bool[ChildPlaces.Count];
+
+        //foreach(Castle castle in Castles)
+        //{
+        //    for(int i=0; i<check.Length; i++)
+        //    {
+        //        check[i] = false;
+        //    }
+        //    List<Castle> neighboringCastles = new List<Castle>();
+
+        //    Province province = (Province)castle.ParentPlace;
+        //    CheckNeighboringProvince(province.x, province.z, check, neighboringCastles, castle);
+
+        //    castle.AddNeighboringCastles(neighboringCastles);
+        //}
+        List<Province> provinces = ChildPlaces.Cast<Province>().ToList();
+
+        List<Province> castleProvinces = new List<Province>();
+        Castles.ForEach(x => castleProvinces.Add((Province)x.ParentPlace));
+        foreach (Province province in castleProvinces)
+        {
+            List<Province> closeProvinces = castleProvinces.Where(x => 0 < Province.GetDistance(x, province) && Province.GetDistance(x, province) <= castleMinDistance * 2).ToList();
+            closeProvinces = closeProvinces.Where(x => HexPathFinder.GetMovementCost(HexPathFinder.GetPath(x, province, Width, Height, provinces)) <= castleMinDistance * 2).ToList();
+            List <Castle> closeCastles = new List<Castle>();
+            closeProvinces.ForEach(x => closeCastles.Add((Castle)x.ChildPlaces[0]));
+            ((Castle)province.ChildPlaces[0]).AddNeighboringCastles(closeCastles);
+        }
+    }
+
+    void CheckNeighboringProvince(int x, int z, bool[] check, List<Castle> neighboringCastles, Castle targetCastle)
+    {
+        if (0 <= x && x < Width && 0 <= z && z < Height)
+        {
+            if (check[x + Width * z] == false)
+            {
+                int index = x + Width * z;
+                check[index] = true;
+                if (ChildPlaces[index].ChildPlaces.Count > 0 && ChildPlaces[index].ChildPlaces[0] is Castle && ChildPlaces[index].ChildPlaces[0] != targetCastle)
+                {
+                    neighboringCastles.Add((Castle)ChildPlaces[index].ChildPlaces[0]);
+                }
+                else if((ChildPlaces[index].ChildPlaces.Count > 0 && (ChildPlaces[index].ChildPlaces[0] is Town || ChildPlaces[index].ChildPlaces[0] == targetCastle)) || (ChildPlaces[index].ChildPlaces.Count == 0 && ((Province)ChildPlaces[index]).IsRoad))
+                {
+                    Province province = (Province)ChildPlaces[index];
+                    CheckNeighboringProvince(province.x + (province.z % 2), province.z + 1, check, neighboringCastles, targetCastle);
+                    CheckNeighboringProvince(province.x + 1, province.z, check, neighboringCastles, targetCastle);
+                    CheckNeighboringProvince(province.x + (province.z % 2), province.z - 1, check, neighboringCastles, targetCastle);
+                    CheckNeighboringProvince(province.x - ((province.z + 1) % 2), province.z - 1, check, neighboringCastles, targetCastle);
+                    CheckNeighboringProvince(province.x - 1, province.z, check, neighboringCastles, targetCastle);
+                    CheckNeighboringProvince(province.x - ((province.z + 1) % 2), province.z + 1, check, neighboringCastles, targetCastle);
+                }
+            }
+        }
+    }
+
+    public Province GetProvince(int x, int z)
+    {
+        return (Province)ChildPlaces[x + z * Width];
     }
 }

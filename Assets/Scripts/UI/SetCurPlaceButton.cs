@@ -18,15 +18,15 @@ public class SetCurPlaceButton : MonoBehaviour {
 
     public void Clicked()
     {
-        person.SetCurPlace(place);
+        //person.SetCurPlace(place);
 
-        if(person.CurPlace.Type == PlaceType.Castle)
-        {
-            SceneManager.LoadScene("Castle");
-        }
-        else
-        {
-            SceneManager.LoadScene("Town");
-        }
+        //if(person.CurPlace.Type == PlaceType.Castle)
+        //{
+        //    SceneManager.LoadScene("Castle");
+        //}
+        //else
+        //{
+        //    SceneManager.LoadScene("Town");
+        //}
     }
 }

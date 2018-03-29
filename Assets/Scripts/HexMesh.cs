@@ -4,6 +4,7 @@ using System.Linq;
 
 public class HexMesh : MonoBehaviour
 {
+    SLGCore core;
     World world;
 
     public GameObject chunkPrefab;
@@ -13,7 +14,8 @@ public class HexMesh : MonoBehaviour
 
     private void Start()
     {
-        world = GameObject.Find("GameInstance").GetComponent<GameInstance>().GetSLGCore().world;
+        core = GameObject.Find("GameInstance").GetComponent<GameInstance>().GetSLGCore();
+        world = core.GetWorld();
 
         CreateChunks();
 

@@ -2,6 +2,6 @@
 {
     public const int RoadLand = 1;
     public const int RoadSea = 1;
-    public const int Land = 4;
-    public const int Sea = 8;
+    public const int Land = 2;
+    public const int Sea = 4;
 }
