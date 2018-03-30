@@ -13,6 +13,8 @@ public class SLGCore
         world = new World(width, height);
         persons = new Persons();
         forces = new Forces();
+
+        persons.SetReference(world);
     }
 
     public World GetWorld()
