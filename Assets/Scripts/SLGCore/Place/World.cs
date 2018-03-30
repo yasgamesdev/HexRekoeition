@@ -50,7 +50,7 @@ public class World : Place
 
         SetTerritory();
 
-        //SetNeighboringCastles();
+        SetNeighboringCastles();
     }
 
     void SetCastle(int castleCount, int minDistance)
@@ -207,57 +207,30 @@ public class World : Place
 
     void SetNeighboringCastles()
     {
-        //bool[] check = new bool[ChildPlaces.Count];
-
-        //foreach(Castle castle in Castles)
-        //{
-        //    for(int i=0; i<check.Length; i++)
-        //    {
-        //        check[i] = false;
-        //    }
-        //    List<Castle> neighboringCastles = new List<Castle>();
-
-        //    Province province = (Province)castle.ParentPlace;
-        //    CheckNeighboringProvince(province.x, province.z, check, neighboringCastles, castle);
-
-        //    castle.AddNeighboringCastles(neighboringCastles);
-        //}
         List<Province> provinces = ChildPlaces.Cast<Province>().ToList();
+        List<Province> roadProvinces = provinces.Where(x => x.IsRoad).ToList();
 
-        List<Province> castleProvinces = new List<Province>();
-        Castles.ForEach(x => castleProvinces.Add((Province)x.ParentPlace));
-        foreach (Province province in castleProvinces)
+        foreach(Province roadProvince in roadProvinces)
         {
-            List<Province> closeProvinces = castleProvinces.Where(x => 0 < Province.GetDistance(x, province) && Province.GetDistance(x, province) <= castleMinDistance * 2).ToList();
-            closeProvinces = closeProvinces.Where(x => HexPathFinder.GetMovementCost(HexPathFinder.GetPath(x, province, Width, Height, provinces)) <= castleMinDistance * 2).ToList();
-            List <Castle> closeCastles = new List<Castle>();
-            closeProvinces.ForEach(x => closeCastles.Add((Castle)x.ChildPlaces[0]));
-            ((Castle)province.ChildPlaces[0]).AddNeighboringCastles(closeCastles);
+            CheckBoarder(roadProvince, roadProvince.x + (roadProvince.z % 2), roadProvince.z + 1);
+            CheckBoarder(roadProvince, roadProvince.x + 1, roadProvince.z);
+            CheckBoarder(roadProvince, roadProvince.x + (roadProvince.z % 2), roadProvince.z - 1);
+            CheckBoarder(roadProvince, roadProvince.x - ((roadProvince.z + 1) % 2), roadProvince.z - 1);
+            CheckBoarder(roadProvince, roadProvince.x - 1, roadProvince.z);
+            CheckBoarder(roadProvince, roadProvince.x - ((roadProvince.z + 1) % 2), roadProvince.z + 1);
         }
     }
 
-    void CheckNeighboringProvince(int x, int z, bool[] check, List<Castle> neighboringCastles, Castle targetCastle)
+    void CheckBoarder(Province roadProvince, int x, int z)
     {
         if (0 <= x && x < Width && 0 <= z && z < Height)
         {
-            if (check[x + Width * z] == false)
+            int index = x + z * Width;
+
+            if (((Province)ChildPlaces[index]).IsRoad && roadProvince.territoryCastle != ((Province)ChildPlaces[index]).territoryCastle)
             {
-                int index = x + Width * z;
-                check[index] = true;
-                if (ChildPlaces[index].ChildPlaces.Count > 0 && ChildPlaces[index].ChildPlaces[0] is Castle && ChildPlaces[index].ChildPlaces[0] != targetCastle)
-                {
-                    neighboringCastles.Add((Castle)ChildPlaces[index].ChildPlaces[0]);
-                }
-                else if((ChildPlaces[index].ChildPlaces.Count > 0 && (ChildPlaces[index].ChildPlaces[0] is Town || ChildPlaces[index].ChildPlaces[0] == targetCastle)) || (ChildPlaces[index].ChildPlaces.Count == 0 && ((Province)ChildPlaces[index]).IsRoad))
-                {
-                    Province province = (Province)ChildPlaces[index];
-                    CheckNeighboringProvince(province.x + (province.z % 2), province.z + 1, check, neighboringCastles, targetCastle);
-                    CheckNeighboringProvince(province.x + 1, province.z, check, neighboringCastles, targetCastle);
-                    CheckNeighboringProvince(province.x + (province.z % 2), province.z - 1, check, neighboringCastles, targetCastle);
-                    CheckNeighboringProvince(province.x - ((province.z + 1) % 2), province.z - 1, check, neighboringCastles, targetCastle);
-                    CheckNeighboringProvince(province.x - 1, province.z, check, neighboringCastles, targetCastle);
-                    CheckNeighboringProvince(province.x - ((province.z + 1) % 2), province.z + 1, check, neighboringCastles, targetCastle);
-                }
+                roadProvince.territoryCastle.AddUniqueNeighboringCastle(((Province)ChildPlaces[index]).territoryCastle);
+                ((Province)ChildPlaces[index]).territoryCastle.AddUniqueNeighboringCastle(roadProvince.territoryCastle);
             }
         }
     }

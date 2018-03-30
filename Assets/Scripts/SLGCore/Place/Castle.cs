@@ -16,9 +16,12 @@ public class Castle : CastleOrTownBase
         territoryProvinces.Add(province);
     }
 
-    public void AddNeighboringCastles(List<Castle> neighboringCastles)
+    public void AddUniqueNeighboringCastle(Castle neightboringCastle)
     {
-        this.neighboringCastles.AddRange(neighboringCastles);
+        if(!neighboringCastles.Contains(neightboringCastle))
+        {
+            neighboringCastles.Add(neightboringCastle);
+        }
     }
 
     public List<Castle> GetNeighboringCastles()
