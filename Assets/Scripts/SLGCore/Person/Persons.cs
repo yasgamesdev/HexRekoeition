@@ -23,4 +23,18 @@ public class Persons
 
         return person;
     }
+
+    public Person AddSamurai(string name, PersonStatus status, CastleOrTownBase homeCastleOrTown)
+    {
+        Person person = new Person(false, name, status, null, null, homeCastleOrTown, null);
+        if(homeCastleOrTown is Castle)
+        {
+            person.daimyo = ((Castle)homeCastleOrTown).Daimyo;
+            person.boss = ((Castle)homeCastleOrTown).Daimyo;
+        }
+
+        persons.Add(person);
+
+        return person;
+    }
 }

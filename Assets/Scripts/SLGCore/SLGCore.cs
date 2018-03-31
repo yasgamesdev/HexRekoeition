@@ -17,6 +17,7 @@ public class SLGCore
         persons.SetReference(world);
 
         GenerateDaimyos(3);
+        GenerateSamurai(200);
     }
 
     void GenerateDaimyos(int maxCastleNum)
@@ -69,6 +70,26 @@ public class SLGCore
                     }
                 }
             }
+        }
+    }
+
+    void GenerateSamurai(int num)
+    {
+        List<CastleOrTownBase> castleOrTowns = world.Castles.Where(x => x.Joshu != null).Union<CastleOrTownBase>(world.Towns).ToList();
+        Random rand = new Random();
+
+        for(int i=0; i<num; i++)
+        {
+            CastleOrTownBase castleOrTown = castleOrTowns[rand.Next(castleOrTowns.Count)];
+
+            House house = new House(castleOrTown);
+            castleOrTown.AddPlace(house);
+
+            Person person = persons.AddSamurai(NameGenerator.Instance.Generate(), PersonStatus.AshigaruKumigashira, castleOrTown);
+            person.curPlace = house;
+            house.AddStayPerson(person);
+
+            house.SetOwnerPerson(person);
         }
     }
 

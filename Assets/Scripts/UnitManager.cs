@@ -98,10 +98,21 @@ public class UnitManager : MonoBehaviour {
                 //        Debug.Log(parentProvince.x + ", " + parentProvince.z);
                 //    }
                 //}
+
                 if (province.ChildPlaces.Count > 0 && province.ChildPlaces[0] is Castle)
                 {
                     Castle castle = (Castle)province.ChildPlaces[0];
-                    Debug.Log(castle.Daimyo.name + ", " + (castle.Daimyo.homeCastleOrTown == castle).ToString());
+                    Debug.Log("Daimyo:" + castle.Daimyo.name + ", " + (castle.Daimyo.homeCastleOrTown == castle).ToString());
+                }
+
+                if (province.ChildPlaces.Count > 0)
+                {
+                    CastleOrTownBase castleOrTown = (CastleOrTownBase)province.ChildPlaces[0];
+                    foreach(Place place in castleOrTown.ChildPlaces)
+                    {
+                        House house = (House)place;
+                        Debug.Log(house.OwnerPerson.name);
+                    }
                 }
             }
         }
