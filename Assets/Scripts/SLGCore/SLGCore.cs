@@ -47,6 +47,7 @@ public class SLGCore
             house.SetOwnerPerson(person);
 
             homeCastle.SetDaimyo(person);
+            homeCastle.SetJoshu(person);
             subCastles.ForEach(x => x.SetDaimyo(person));
         }
     }
