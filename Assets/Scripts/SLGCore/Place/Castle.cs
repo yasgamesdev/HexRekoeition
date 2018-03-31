@@ -6,6 +6,7 @@ public class Castle : CastleOrTownBase
 {
     List<Province> territoryProvinces = new List<Province>();
     List<Castle> neighboringCastles = new List<Castle>();
+    public Person Daimyo { get; private set; }
 
     public Castle(Place parentPlace) : base(PlaceType.Castle, parentPlace)
     {
@@ -27,5 +28,10 @@ public class Castle : CastleOrTownBase
     public List<Castle> GetNeighboringCastles()
     {
         return neighboringCastles;
+    }
+
+    public void SetDaimyo(Person daimyo)
+    {
+        Daimyo = daimyo;
     }
 }

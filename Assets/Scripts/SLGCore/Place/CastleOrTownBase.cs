@@ -8,15 +8,18 @@ public class CastleOrTownBase : Place
     {
     }
 
-    public void AddHouse(Person ownerPerson)
-    {
-        AddPlace(new House(ownerPerson, this));
-    }
+    //public House AddHouse(Person ownerPerson)
+    //{
+    //    House house = new House(ownerPerson, this);
+    //    AddPlace(house);
 
-    public void RemoveHouse(Person ownerPerson)
-    {
-        ChildPlaces.RemoveAll(x => x.Type == PlaceType.House && ((House)x).OwnerPerson == ownerPerson);
-    }
+    //    return house;
+    //}
+
+    //public void RemoveHouse(Person ownerPerson)
+    //{
+    //    ChildPlaces.RemoveAll(x => x.Type == PlaceType.House && ((House)x).OwnerPerson == ownerPerson);
+    //}
 
     public House GetHouse(Person ownerPerson)
     {

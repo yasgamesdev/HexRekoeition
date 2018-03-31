@@ -22,7 +22,7 @@ public class Place
         ChildPlaces.Add(place);
     }
 
-    public void AddStayUnit(Person person)
+    public void AddStayPerson(Person person)
     {
         StayPersons.Add(person);
     }

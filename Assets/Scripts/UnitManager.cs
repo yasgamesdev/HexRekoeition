@@ -89,25 +89,20 @@ public class UnitManager : MonoBehaviour {
 
                 Province province = core.GetWorld().GetProvince(_x, _z);
 
+                //if (province.ChildPlaces.Count > 0 && province.ChildPlaces[0] is Castle)
+                //{
+                //    Castle castle = (Castle)province.ChildPlaces[0];
+                //    foreach (Castle neighbor in castle.GetNeighboringCastles())
+                //    {
+                //        Province parentProvince = (Province)neighbor.ParentPlace;
+                //        Debug.Log(parentProvince.x + ", " + parentProvince.z);
+                //    }
+                //}
                 if (province.ChildPlaces.Count > 0 && province.ChildPlaces[0] is Castle)
                 {
                     Castle castle = (Castle)province.ChildPlaces[0];
-                    foreach (Castle neighbor in castle.GetNeighboringCastles())
-                    {
-                        Province parentProvince = (Province)neighbor.ParentPlace;
-                        Debug.Log(parentProvince.x + ", " + parentProvince.z);
-                    }
+                    Debug.Log(castle.Daimyo.name + ", " + (castle.Daimyo.homeCastleOrTown == castle).ToString());
                 }
-
-                //Province fromProvince = (Province)playerPerson.person.CurPlace;
-                //List<Province> path = HexPathFinder.GetPath(fromProvince, province, core.world.Width, core.world.Height, core.world.ChildPlaces.Cast<Province>().ToList());
-                //if (path.Count > 0)
-                //{
-                //    for (int i = 1; i < path.Count; i++)
-                //    {
-                //        playerPerson.person.EnqueueCommand(new MoveProvince(path[i]));
-                //    }
-                //}
             }
         }
     }

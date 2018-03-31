@@ -14,18 +14,13 @@ public class Persons
         this.world = world;
     }
 
-    public void GeneratePerson()
+    public Person AddDaimyo(string name, CastleOrTownBase homeCastleOrTown)
     {
+        Person person = new Person(false, name, PersonStatus.Daimyo, null, null, homeCastleOrTown, null);
+        person.daimyo = person;
 
-    }
-
-    public void AddPerson(Person person)
-    {
         persons.Add(person);
 
-        if(person.isPlayer)
-        {
-            playerPerson = person;
-        }
+        return person;
     }
 }

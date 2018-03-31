@@ -56,9 +56,21 @@ public class HexMeshChunk : MonoBehaviour
                             center + HexMetrics.corners[i + 1]
                         );
                         //AddTriangleColor(world.GetProvince(x, z).Terrain == TerrainType.Sea ? Color.blue : Color.green);
+
+                        //Castle castle = world.GetProvince(x, z).territoryCastle;
+                        //Province castleProvince = (Province)castle.ParentPlace;
+                        //Random.InitState(castleProvince.i);
+                        //float r = Random.Range(0.0f, 1.0f);
+                        //float g = Random.Range(0.0f, 1.0f);
+                        //float b = Random.Range(0.0f, 1.0f);
+                        //AddTriangleColor(world.GetProvince(x, z).Terrain == TerrainType.Sea ? Color.blue : new Color(r, g, b));
+
                         Castle castle = world.GetProvince(x, z).territoryCastle;
-                        Province castleProvince = (Province)castle.ParentPlace;
-                        Random.InitState(castleProvince.i);
+                        Person person = castle.Daimyo;
+                        var md5Hasher = System.Security.Cryptography.MD5.Create();
+                        var hashed = md5Hasher.ComputeHash(System.Text.Encoding.UTF8.GetBytes(person.name));
+                        var integer = System.BitConverter.ToInt32(hashed, 0);
+                        Random.InitState(integer);
                         float r = Random.Range(0.0f, 1.0f);
                         float g = Random.Range(0.0f, 1.0f);
                         float b = Random.Range(0.0f, 1.0f);
