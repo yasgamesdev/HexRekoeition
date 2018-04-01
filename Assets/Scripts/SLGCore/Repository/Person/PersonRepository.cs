@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-public class Persons
+public class PersonRepository : Repository
 {
     //World world;
 

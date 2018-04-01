@@ -163,8 +163,8 @@ public class ProvinceRepository : Repository
                 List<Province> closeProvinces = provinces.Where(x => range - 1 < Province.GetDistance(x, province) && Province.GetDistance(x, province) <= range).ToList();
                 foreach (Province closeProvince in closeProvinces)
                 {
-                    closeProvince.SetTerritoryCastleId(province.castleId);
-                    CastleRepository.Instance.GetCastle(province.castleId).AddTerritoryProvinceId(closeProvince.Id);
+                    closeProvince.SetTerritoryCastleId(province.CastleId);
+                    CastleRepository.Instance.GetCastle(province.CastleId).AddTerritoryProvinceId(closeProvince.Id);
 
                     provinces.Remove(closeProvince);
                 }
@@ -196,10 +196,10 @@ public class ProvinceRepository : Repository
         {
             Province boarderProvince = GetProvince(x, z);
 
-            if (boarderProvince.ProvinceType != ProvinceType.None && roadProvince.territoryCastleId != boarderProvince.territoryCastleId)
+            if (boarderProvince.ProvinceType != ProvinceType.None && roadProvince.TerritoryCastleId != boarderProvince.TerritoryCastleId)
             {
-                CastleRepository.Instance.GetCastle(roadProvince.territoryCastleId).AddUniqueNeighboringCastleId(boarderProvince.territoryCastleId);
-                CastleRepository.Instance.GetCastle(boarderProvince.territoryCastleId).AddUniqueNeighboringCastleId(roadProvince.territoryCastleId);
+                CastleRepository.Instance.GetCastle(roadProvince.TerritoryCastleId).AddUniqueNeighboringCastleId(boarderProvince.TerritoryCastleId);
+                CastleRepository.Instance.GetCastle(boarderProvince.TerritoryCastleId).AddUniqueNeighboringCastleId(roadProvince.TerritoryCastleId);
             }
         }
     }

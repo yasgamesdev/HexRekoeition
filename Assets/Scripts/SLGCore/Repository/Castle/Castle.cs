@@ -8,6 +8,8 @@ public class Castle : RepositoryData
 
     List<int> territoryProvinceIds = new List<int>();
     List<int> neighboringCastleIds = new List<int>();
+    List<int> houseIds = new List<int>();
+
     public Person Daimyo { get; private set; }
     public Person Joshu { get; private set; }
 
@@ -37,9 +39,9 @@ public class Castle : RepositoryData
         }
     }
 
-    public List<int> GetNeighboringCastles()
+    public List<Castle> GetNeighboringCastles()
     {
-        return new List<int>(neighboringCastleIds);
+        return neighboringCastleIds.ConvertAll(x => CastleRepository.Instance.GetCastle(x));
     }
 
     public void SetDaimyo(Person daimyo)
@@ -50,5 +52,17 @@ public class Castle : RepositoryData
     public void SetJoshu(Person joshu)
     {
         Joshu = joshu;
+    }
+
+    public void AddHouse(int houseId)
+    {
+        //関連を変更するときは、Houseオブジェクトだけがこれを使うこと
+        houseIds.Add(houseId);
+    }
+
+    public void RemoveHouse(int houseId)
+    {
+        //関連を変更するときは、Houseオブジェクトだけがこれを使うこと
+        houseIds.Remove(houseId);
     }
 }

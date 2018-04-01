@@ -3,10 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public class UnitManager : MonoBehaviour {
-
-    /*SLGCore core;
-
+public class UnitManager : MonoBehaviour
+{
     public GameObject personPrefab;
     List<GameObject> units = new List<GameObject>();
 
@@ -14,17 +12,12 @@ public class UnitManager : MonoBehaviour {
 
     private void Start()
     {
-        core = GameObject.Find("GameInstance").GetComponent<GameInstance>().GetSLGCore();
 
-        //GameObject obj = Instantiate(personPrefab, transform);
-        //obj.GetComponent<WorldPerson>().Init(core.GetPlayerPerson());
-        //units.Add(obj);
-        //playerPerson = obj.GetComponent<WorldPerson>();
     }
 
     const int updateSpeed = 1;
     int updateCounter = 0;
-    
+
     void Update()
     {
         SetPlayerPath();
@@ -42,7 +35,7 @@ public class UnitManager : MonoBehaviour {
 
     void SetPlayerPath()
     {
-        if (core != null && Input.GetMouseButtonDown(1))
+        if (Input.GetMouseButtonDown(1))
         {
             Ray inputRay = Camera.main.ScreenPointToRay(Input.mousePosition);
             RaycastHit hit;
@@ -77,18 +70,27 @@ public class UnitManager : MonoBehaviour {
                     }
                 }
 
-                int index = iX + iZ * core.GetWorld().Width + iZ / 2;
+                int index = iX + iZ * ProvinceRepository.Instance.Width + iZ / 2;
 
-                int _x = index % core.GetWorld().Width;
-                int _z = index / core.GetWorld().Width;
+                int _x = index % ProvinceRepository.Instance.Width;
+                int _z = index / ProvinceRepository.Instance.Width;
 
                 Vector3 center;
                 center.x = (_x + _z * 0.5f - _z / 2) * (HexMetrics.innerRadius * 2f);
                 center.y = 1.0f;
                 center.z = _z * (HexMetrics.outerRadius * 1.5f);
 
-                Province province = core.GetWorld().GetProvince(_x, _z);
+                Province province = ProvinceRepository.Instance.GetProvince(_x, _z);
 
+                if (province.ProvinceType == ProvinceType.Castle)
+                {
+                    Castle castle = province.GetCastle();
+                    foreach (Castle neightboringCastle in castle.GetNeighboringCastles())
+                    {
+                        Province _province = neightboringCastle.GetProvince();
+                        Debug.Log(_province.x + ", " + _province.z);
+                    }
+                }
                 //if (province.ChildPlaces.Count > 0 && province.ChildPlaces[0] is Castle)
                 //{
                 //    Castle castle = (Castle)province.ChildPlaces[0];
@@ -99,22 +101,22 @@ public class UnitManager : MonoBehaviour {
                 //    }
                 //}
 
-                if (province.ChildPlaces.Count > 0 && province.ChildPlaces[0] is Castle)
-                {
-                    Castle castle = (Castle)province.ChildPlaces[0];
-                    Debug.Log("Daimyo:" + castle.Daimyo.name + ", " + (castle.Daimyo.homeCastleOrTown == castle).ToString());
-                }
+                //if (province.ChildPlaces.Count > 0 && province.ChildPlaces[0] is Castle)
+                //{
+                //    Castle castle = (Castle)province.ChildPlaces[0];
+                //    Debug.Log("Daimyo:" + castle.Daimyo.name + ", " + (castle.Daimyo.homeCastleOrTown == castle).ToString());
+                //}
 
-                if (province.ChildPlaces.Count > 0)
-                {
-                    CastleOrTownBase castleOrTown = (CastleOrTownBase)province.ChildPlaces[0];
-                    foreach(Place place in castleOrTown.ChildPlaces)
-                    {
-                        House house = (House)place;
-                        Debug.Log(house.OwnerPerson.name);
-                    }
-                }
+                //if (province.ChildPlaces.Count > 0)
+                //{
+                //    CastleOrTownBase castleOrTown = (CastleOrTownBase)province.ChildPlaces[0];
+                //    foreach(Place place in castleOrTown.ChildPlaces)
+                //    {
+                //        House house = (House)place;
+                //        Debug.Log(house.OwnerPerson.name);
+                //    }
+                //}
             }
         }
-    }*/
+    }
 }

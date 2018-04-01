@@ -7,12 +7,10 @@ using UnityEngine.UI;
 public class SetCurPlaceButton : MonoBehaviour {
 
     Person person;
-    Place place;
 
-	public void Init(Person person, Place place, string labelText)
+	public void Init(Person person, string labelText)
     {
         this.person = person;
-        this.place = place;
         GetComponentInChildren<Text>().text = labelText;
     }
 

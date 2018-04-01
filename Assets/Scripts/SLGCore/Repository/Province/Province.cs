@@ -11,9 +11,9 @@ public class Province : RepositoryData
     public TerrainType TerrainType { get; private set; }
     public ProvinceType ProvinceType { get; private set; }
 
-    public int castleId { get; private set; }
-    public int townId { get; private set; }
-    public int territoryCastleId { get; private set; }
+    public int CastleId { get; private set; }
+    public int TownId { get; private set; }
+    public int TerritoryCastleId { get; private set; }
 
     public int X
     {
@@ -58,22 +58,27 @@ public class Province : RepositoryData
 
     public void SetCastleId(int castleId)
     {
-        this.castleId = castleId;
+        CastleId = castleId;
+    }
+
+    public Castle GetCastle()
+    {
+        return CastleRepository.Instance.GetCastle(CastleId);
     }
 
     public void SetTownId(int townId)
     {
-        this.townId = townId;
+        TownId = townId;
     }
 
     public void SetTerritoryCastleId(int territoryCastleId)
     {
-        this.territoryCastleId = territoryCastleId;
+        TerritoryCastleId = territoryCastleId;
     }
 
     public Castle GetTerritoryCastle()
     {
-        return CastleRepository.Instance.GetCastle(territoryCastleId);
+        return CastleRepository.Instance.GetCastle(TerritoryCastleId);
     }
 
     public static int GetDistance(Province fromProvince, Province toProvince)

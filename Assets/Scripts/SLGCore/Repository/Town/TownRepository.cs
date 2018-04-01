@@ -39,4 +39,9 @@ public class TownRepository : Repository
             }
         }
     }
+
+    public Town GetTown(int townId)
+    {
+        return (Town)GetRepositoryData(townId);
+    }
 }

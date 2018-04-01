@@ -9,8 +9,7 @@ public class WorldMainAction : MonoBehaviour {
     GameObject buttonRoot;
 
     List<GameObject> buttons = new List<GameObject>();
-
-    Place curShowPlace;
+    
     // Use this for initialization
     void Start()
     {

@@ -2,27 +2,37 @@
 using System.Collections.Generic;
 using System.Linq;
 
-public class Person
+public class Person : RepositoryData
 {
-    public bool isPlayer;
-    public string name;
-    public PersonStatus status;
-    public Person daimyo;
-    public Person boss;
-    public CastleOrTownBase homeCastleOrTown;
-    public Place curPlace;
-    public int kunko;
+    public bool IsPlayer { get; private set; }
+    public string Name { get; private set; }
+    public PersonStatus Status { get; private set; }
+    public int FactionId { get; private set; }
+    public int BossPersonId { get; private set; }
+    public int HouseId { get; private set; }
+    
+    public PlaceType curPlaceType { get; private set; }
+    public int placeId { get; private set; }
 
-    public Person(bool isPlayer, string name, PersonStatus status, Person daimyo, Person boss, CastleOrTownBase homeCastleOrTown, Place curPlace)
+    public int kunko { get; private set; }
+
+    public Person(bool isPlayer, string name, PersonStatus status, Repository repository) :base(repository)
     {
-        this.isPlayer = isPlayer;
-        this.name = name;
-        this.status = status;
-        this.daimyo = daimyo;
-        this.boss = boss;
-        this.homeCastleOrTown = homeCastleOrTown;
-        this.curPlace = curPlace;
+        IsPlayer = isPlayer;
+        Name = name;
+        Status = status;
+
         kunko = GetKunko(status);
+    }
+
+    public void SetFactionId(int factionId)
+    {
+
+    }
+
+    public void SetBossPersonId(int bossPersonId)
+    {
+
     }
 
     public static int GetKunko(PersonStatus status)
