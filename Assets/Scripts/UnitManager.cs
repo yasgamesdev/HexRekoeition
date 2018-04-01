@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class UnitManager : MonoBehaviour {
 
-    SLGCore core;
+    /*SLGCore core;
 
     public GameObject personPrefab;
     List<GameObject> units = new List<GameObject>();
@@ -116,5 +116,5 @@ public class UnitManager : MonoBehaviour {
                 }
             }
         }
-    }
+    }*/
 }

@@ -16,13 +16,13 @@ public class WorldPerson : MonoBehaviour
     {
         if (person.curPlace.Type == PlaceType.Province)
         {
-            Province province = (Province)person.curPlace;
+            //Province province = (Province)person.curPlace;
 
-            Vector3 center;
-            center.x = (province.x + province.z * 0.5f - province.z / 2) * (HexMetrics.innerRadius * 2f);
-            center.y = 0.2f;
-            center.z = province.z * (HexMetrics.outerRadius * 1.5f);
-            transform.localPosition = center;
+            //Vector3 center;
+            //center.x = (province.x + province.z * 0.5f - province.z / 2) * (HexMetrics.innerRadius * 2f);
+            //center.y = 0.2f;
+            //center.z = province.z * (HexMetrics.outerRadius * 1.5f);
+            //transform.localPosition = center;
 
             //if (person.NextProvince == null)
             //{

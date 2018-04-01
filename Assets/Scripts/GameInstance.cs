@@ -12,8 +12,6 @@ public class GameInstance : MonoBehaviour
         get { return instance; }
     }
 
-    SLGCore core;
-
     void Awake()
     {
         if (Instance != null)
@@ -25,11 +23,6 @@ public class GameInstance : MonoBehaviour
         instance = this;
         DontDestroyOnLoad(gameObject);
 
-        core = new SLGCore(HexMetrics.chunkCountX * HexMetrics.chunkSizeX, HexMetrics.chunkCountZ * HexMetrics.chunkSizeZ);
-    }
-
-    public SLGCore GetSLGCore()
-    {
-        return core;
+        SLGCore.Instance.GenerateWorld(HexMetrics.chunkCountX * HexMetrics.chunkSizeX, HexMetrics.chunkCountZ * HexMetrics.chunkSizeZ, HexMetrics.worldSize);
     }
 }

@@ -19,4 +19,5 @@ public static class HexMetrics
 
     public const int chunkSizeX = 5, chunkSizeZ = 5;
     public const int chunkCountX = 8, chunkCountZ = 8;
+    public const float worldSize = 6.0f;
 }

@@ -12,13 +12,11 @@ public class HexMeshChunk : MonoBehaviour
     MeshCollider meshCollider;
 
     int chunkIndexX, chunkIndexZ;
-    World world;
 
-    public void Init(int chunkIndexX, int chunkIndexZ, World world)
+    public void Init(int chunkIndexX, int chunkIndexZ)
     {
         this.chunkIndexX = chunkIndexX;
         this.chunkIndexZ = chunkIndexZ;
-        this.world = world;
 
         GetComponent<MeshFilter>().mesh = hexMesh = new Mesh();
         meshCollider = gameObject.AddComponent<MeshCollider>();
@@ -32,59 +30,56 @@ public class HexMeshChunk : MonoBehaviour
 
     public void Triangulate()
     {
-        if (world != null)
+        hexMesh.Clear();
+        vertices.Clear();
+        colors.Clear();
+        triangles.Clear();
+
+        for (int z = chunkIndexZ * HexMetrics.chunkSizeZ; z < (chunkIndexZ + 1) * HexMetrics.chunkSizeZ; z++)
         {
-            hexMesh.Clear();
-            vertices.Clear();
-            colors.Clear();
-            triangles.Clear();
-
-            for (int z = chunkIndexZ * HexMetrics.chunkSizeZ; z < (chunkIndexZ + 1) * HexMetrics.chunkSizeZ; z++)
+            for (int x = chunkIndexX * HexMetrics.chunkSizeX; x < (chunkIndexX + 1) * HexMetrics.chunkSizeX; x++)
             {
-                for (int x = chunkIndexX * HexMetrics.chunkSizeX; x < (chunkIndexX + 1) * HexMetrics.chunkSizeX; x++)
+                Vector3 center;
+                center.x = (x + z * 0.5f - z / 2) * (HexMetrics.innerRadius * 2f);
+                center.y = 0f;
+                center.z = z * (HexMetrics.outerRadius * 1.5f);
+
+                for (int i = 0; i < 6; i++)
                 {
-                    Vector3 center;
-                    center.x = (x + z * 0.5f - z / 2) * (HexMetrics.innerRadius * 2f);
-                    center.y = 0f;
-                    center.z = z * (HexMetrics.outerRadius * 1.5f);
+                    AddTriangle(
+                        center,
+                        center + HexMetrics.corners[i],
+                        center + HexMetrics.corners[i + 1]
+                    );
+                    //AddTriangleColor(ProvinceRepository.Instance.GetProvince(x, z).TerrainType == TerrainType.Sea ? Color.blue : Color.green);
 
-                    for (int i = 0; i < 6; i++)
-                    {
-                        AddTriangle(
-                            center,
-                            center + HexMetrics.corners[i],
-                            center + HexMetrics.corners[i + 1]
-                        );
-                        //AddTriangleColor(world.GetProvince(x, z).Terrain == TerrainType.Sea ? Color.blue : Color.green);
+                    Castle castle = ProvinceRepository.Instance.GetProvince(x, z).GetTerritoryCastle();
+                    Province castleProvince = castle.GetProvince();
+                    Random.InitState(castleProvince.i);
+                    float r = Random.Range(0.0f, 1.0f);
+                    float g = Random.Range(0.0f, 1.0f);
+                    float b = Random.Range(0.0f, 1.0f);
+                    AddTriangleColor(ProvinceRepository.Instance.GetProvince(x, z).TerrainType == TerrainType.Sea ? Color.blue : new Color(r, g, b));
 
-                        //Castle castle = world.GetProvince(x, z).territoryCastle;
-                        //Province castleProvince = (Province)castle.ParentPlace;
-                        //Random.InitState(castleProvince.i);
-                        //float r = Random.Range(0.0f, 1.0f);
-                        //float g = Random.Range(0.0f, 1.0f);
-                        //float b = Random.Range(0.0f, 1.0f);
-                        //AddTriangleColor(world.GetProvince(x, z).Terrain == TerrainType.Sea ? Color.blue : new Color(r, g, b));
-
-                        Castle castle = world.GetProvince(x, z).territoryCastle;
-                        Person person = castle.Daimyo;
-                        var md5Hasher = System.Security.Cryptography.MD5.Create();
-                        var hashed = md5Hasher.ComputeHash(System.Text.Encoding.UTF8.GetBytes(person.name));
-                        var integer = System.BitConverter.ToInt32(hashed, 0);
-                        Random.InitState(integer);
-                        float r = Random.Range(0.0f, 1.0f);
-                        float g = Random.Range(0.0f, 1.0f);
-                        float b = Random.Range(0.0f, 1.0f);
-                        AddTriangleColor(world.GetProvince(x, z).Terrain == TerrainType.Sea ? Color.blue : new Color(r, g, b));
-                    }
+                    //Castle castle = world.GetProvince(x, z).territoryCastle;
+                    //Person person = castle.Daimyo;
+                    //var md5Hasher = System.Security.Cryptography.MD5.Create();
+                    //var hashed = md5Hasher.ComputeHash(System.Text.Encoding.UTF8.GetBytes(person.name));
+                    //var integer = System.BitConverter.ToInt32(hashed, 0);
+                    //Random.InitState(integer);
+                    //float r = Random.Range(0.0f, 1.0f);
+                    //float g = Random.Range(0.0f, 1.0f);
+                    //float b = Random.Range(0.0f, 1.0f);
+                    //AddTriangleColor(world.GetProvince(x, z).TerrainType == TerrainType.Sea ? Color.blue : new Color(r, g, b));
                 }
             }
-
-            hexMesh.vertices = vertices.ToArray();
-            hexMesh.colors = colors.ToArray();
-            hexMesh.triangles = triangles.ToArray();
-            hexMesh.RecalculateNormals();
-            meshCollider.sharedMesh = hexMesh;
         }
+
+        hexMesh.vertices = vertices.ToArray();
+        hexMesh.colors = colors.ToArray();
+        hexMesh.triangles = triangles.ToArray();
+        hexMesh.RecalculateNormals();
+        meshCollider.sharedMesh = hexMesh;
     }
 
     void AddTriangle(Vector3 v1, Vector3 v2, Vector3 v3)

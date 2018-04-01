@@ -6,8 +6,12 @@ public class HexPathFinder
 {
     static ANode[] nodes;
 
-    public static List<Province> GetPath(Province fromProvince, Province toProvince, int width, int height, List<Province> provinces)
+    public static List<Province> GetPath(Province fromProvince, Province toProvince)
     {
+        int width = ProvinceRepository.Instance.Width;
+        int height = ProvinceRepository.Instance.Height;
+        List<Province> provinces = ProvinceRepository.Instance.GetAllProvince();
+
         if (nodes == null)
         {
             nodes = new ANode[width * height];
@@ -61,13 +65,13 @@ public class HexPathFinder
             if (nodes[x + width * z].state == ANodeState.None)
             {
                 int index = x + width * z;
-                if(provinces[index].IsRoad)
+                if(provinces[index].ProvinceType != ProvinceType.None)
                 {
-                    nodes[index].C = minNode.C + provinces[index].Terrain == TerrainType.Sea ? MovementCost.RoadSea : MovementCost.RoadLand;
+                    nodes[index].C = minNode.C + provinces[index].TerrainType == TerrainType.Sea ? MovementCost.SeaRoute : MovementCost.LandRoute;
                 }
                 else
                 {
-                    nodes[index].C = minNode.C + (provinces[index].Terrain == TerrainType.Sea ? MovementCost.Sea : MovementCost.Land);
+                    nodes[index].C = minNode.C + (provinces[index].TerrainType == TerrainType.Sea ? MovementCost.Sea : MovementCost.Land);
                 }
                 nodes[index].H = Province.GetDistance(minNode.province, toProvince);
                 nodes[index].parent = minNode;
@@ -97,22 +101,5 @@ public class HexPathFinder
         provinces.Reverse();
 
         return provinces;
-    }
-
-    public static int GetMovementCost(List<Province> path)
-    {
-        return path.Sum(x => GetMovementCost(x));
-    }
-
-    public static int GetMovementCost(Province province)
-    {
-        if(province.IsRoad)
-        {
-            return province.Terrain == TerrainType.Sea ? MovementCost.RoadLand : MovementCost.RoadLand;
-        }
-        else
-        {
-            return province.Terrain == TerrainType.Sea ? MovementCost.Sea : MovementCost.Land;
-        }
     }
 }
