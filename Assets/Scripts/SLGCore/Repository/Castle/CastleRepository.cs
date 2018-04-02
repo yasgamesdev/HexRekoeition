@@ -44,4 +44,9 @@ public class CastleRepository : Repository
     {
         return (Castle)GetRepositoryData(castleId);
     }
+
+    public List<Castle> GetAllCastle()
+    {
+        return GetAllRepositoryData().Cast<Castle>().ToList();
+    }
 }

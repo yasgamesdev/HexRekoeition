@@ -67,4 +67,9 @@ public class Castle : RepositoryData
     {
         return PersonRepository.Instance.GetPerson(joshuPersonId);
     }
+
+    public List<House> GetHouses()
+    {
+        return HouseRepository.Instance.GetHouses(this);
+    }
 }

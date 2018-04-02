@@ -22,4 +22,9 @@ public class FactionRepository : Repository
     {
         return (Faction)GetRepositoryData(factionId);
     }
+
+    public Faction CreateFaction(string name)
+    {
+        return new Faction(name, this);
+    }
 }

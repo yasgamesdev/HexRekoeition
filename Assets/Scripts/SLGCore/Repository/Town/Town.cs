@@ -18,4 +18,9 @@ public class Town : RepositoryData
     {
         return ProvinceRepository.Instance.GetProvince(provinceId);
     }
+
+    public List<House> GetHouses()
+    {
+        return HouseRepository.Instance.GetHouses(this);
+    }
 }

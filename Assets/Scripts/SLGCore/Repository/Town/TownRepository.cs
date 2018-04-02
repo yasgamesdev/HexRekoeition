@@ -44,4 +44,9 @@ public class TownRepository : Repository
     {
         return (Town)GetRepositoryData(townId);
     }
+
+    public List<Town> GetAllTown()
+    {
+        return GetAllRepositoryData().Cast<Town>().ToList();
+    }
 }

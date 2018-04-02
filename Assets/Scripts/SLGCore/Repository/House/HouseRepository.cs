@@ -22,4 +22,19 @@ public class HouseRepository : Repository
     {
         return (House)GetRepositoryData(houseId);
     }
+
+    public House CreateHouse(Person ownerPerson)
+    {
+        return new House(ownerPerson, this);
+    }
+
+    public List<House> GetHouses(Castle castle)
+    {
+        return GetAllRepositoryData().Cast<House>().Where(x => x.HouseType == HouseType.Castle && x.GetCastle() == castle).ToList();
+    }
+
+    public List<House> GetHouses(Town town)
+    {
+        return GetAllRepositoryData().Cast<House>().Where(x => x.HouseType == HouseType.Town && x.GetTown() == town).ToList();
+    }
 }

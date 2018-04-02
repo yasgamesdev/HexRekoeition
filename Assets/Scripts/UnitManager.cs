@@ -82,40 +82,34 @@ public class UnitManager : MonoBehaviour
 
                 Province province = ProvinceRepository.Instance.GetProvince(_x, _z);
 
+                //if (province.ProvinceType == ProvinceType.Castle)
+                //{
+                //    Castle castle = province.GetCastle();
+                //    foreach (Castle neightboringCastle in castle.GetNeighboringCastles())
+                //    {
+                //        Province _province = neightboringCastle.GetProvince();
+                //        Debug.Log(_province.x + ", " + _province.z);
+                //    }
+                //}
+
                 if (province.ProvinceType == ProvinceType.Castle)
                 {
                     Castle castle = province.GetCastle();
-                    foreach (Castle neightboringCastle in castle.GetNeighboringCastles())
+                    Faction faction = castle.GetFaction();
+                    Debug.Log("Faction:" + faction.Name);
+                    foreach(House house in castle.GetHouses())
                     {
-                        Province _province = neightboringCastle.GetProvince();
-                        Debug.Log(_province.x + ", " + _province.z);
+                        Debug.Log(house.GetOwnerPerson().Name + ", " + house.GetOwnerPerson().Status);
                     }
                 }
-                //if (province.ChildPlaces.Count > 0 && province.ChildPlaces[0] is Castle)
-                //{
-                //    Castle castle = (Castle)province.ChildPlaces[0];
-                //    foreach (Castle neighbor in castle.GetNeighboringCastles())
-                //    {
-                //        Province parentProvince = (Province)neighbor.ParentPlace;
-                //        Debug.Log(parentProvince.x + ", " + parentProvince.z);
-                //    }
-                //}
-
-                //if (province.ChildPlaces.Count > 0 && province.ChildPlaces[0] is Castle)
-                //{
-                //    Castle castle = (Castle)province.ChildPlaces[0];
-                //    Debug.Log("Daimyo:" + castle.Daimyo.name + ", " + (castle.Daimyo.homeCastleOrTown == castle).ToString());
-                //}
-
-                //if (province.ChildPlaces.Count > 0)
-                //{
-                //    CastleOrTownBase castleOrTown = (CastleOrTownBase)province.ChildPlaces[0];
-                //    foreach(Place place in castleOrTown.ChildPlaces)
-                //    {
-                //        House house = (House)place;
-                //        Debug.Log(house.OwnerPerson.name);
-                //    }
-                //}
+                else if(province.ProvinceType == ProvinceType.Town)
+                {
+                    Town town = province.GetTown();
+                    foreach(House house in town.GetHouses())
+                    {
+                        Debug.Log(house.GetOwnerPerson().Name + ", " + house.GetOwnerPerson().Status);
+                    }
+                }
             }
         }
     }

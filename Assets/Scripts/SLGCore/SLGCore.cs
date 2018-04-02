@@ -29,6 +29,10 @@ public class SLGCore
 
         ProvinceRepository.Instance.SetTerritory();
         ProvinceRepository.Instance.SetNeighboringCastles();
+
+        PersonRepository.Instance.GenerateFactions(3);
+        PersonRepository.Instance.GenerateSamurai(100);
+        PersonRepository.Instance.GenerateRonin(100);
     }
 
     //World world;

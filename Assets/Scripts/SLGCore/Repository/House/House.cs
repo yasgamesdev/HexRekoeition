@@ -6,11 +6,12 @@ public class House : RepositoryData
 {
     int ownerPersonId;
 
-    public HouseType houseType { get; private set; } = HouseType.None;
+    public HouseType HouseType { get; private set; } = HouseType.None;
     int placeId;
 
-    public House(Person person, Repository repository) : base(repository)
+    public House(Person ownerPerson, Repository repository) : base(repository)
     {
+        ownerPersonId = ownerPerson.Id;
     }
 
     public Person GetOwnerPerson()
@@ -18,10 +19,10 @@ public class House : RepositoryData
         return PersonRepository.Instance.GetPerson(ownerPersonId);
     }
 
-    public void SetCastle(int castleId)
+    public void SetCastle(Castle castle)
     {
-        houseType = HouseType.Castle;
-        placeId = castleId;
+        HouseType = HouseType.Castle;
+        placeId = castle.Id;
     }
 
     public Castle GetCastle()
@@ -29,10 +30,10 @@ public class House : RepositoryData
         return CastleRepository.Instance.GetCastle(placeId);
     }
 
-    public void SetTown(int townId)
+    public void SetTown(Town town)
     {
-        houseType = HouseType.Town;
-        placeId = townId;
+        HouseType = HouseType.Town;
+        placeId = town.Id;
     }
 
     public Town GetTown()
