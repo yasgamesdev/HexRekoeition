@@ -4,37 +4,22 @@ using System.Linq;
 
 public class PersonRepository : Repository
 {
-    //World world;
+    private static PersonRepository instance = new PersonRepository();
 
-    //public Person playerPerson { get; private set; }
-    //List<Person> persons = new List<Person>();
+    public static PersonRepository Instance
+    {
+        get
+        {
+            return instance;
+        }
+    }
 
-    //public void SetReference(World world)
-    //{
-    //    this.world = world;
-    //}
+    private PersonRepository()
+    {
+    }
 
-    //public Person AddDaimyo(string name, CastleOrTownBase homeCastleOrTown)
-    //{
-    //    Person person = new Person(false, name, PersonStatus.Daimyo, null, null, homeCastleOrTown, null);
-    //    person.daimyo = person;
-
-    //    persons.Add(person);
-
-    //    return person;
-    //}
-
-    //public Person AddSamurai(string name, PersonStatus status, CastleOrTownBase homeCastleOrTown)
-    //{
-    //    Person person = new Person(false, name, status, null, null, homeCastleOrTown, null);
-    //    if(homeCastleOrTown is Castle)
-    //    {
-    //        person.daimyo = ((Castle)homeCastleOrTown).Daimyo;
-    //        person.boss = ((Castle)homeCastleOrTown).Daimyo;
-    //    }
-
-    //    persons.Add(person);
-
-    //    return person;
-    //}
+    public Person GetPerson(int personId)
+    {
+        return (Person)GetRepositoryData(personId);
+    }
 }

@@ -8,17 +8,16 @@ public class Castle : RepositoryData
 
     List<int> territoryProvinceIds = new List<int>();
     List<int> neighboringCastleIds = new List<int>();
-    List<int> houseIds = new List<int>();
 
-    public Person Daimyo { get; private set; }
-    public Person Joshu { get; private set; }
+    int factionId;
+    int joshuPersonId;
 
     public Castle(Province province, Repository repository) : base(repository)
     {
         provinceId = province.Id;
 
         province.SetProvinceType(ProvinceType.Castle);
-        province.SetCastleId(Id);
+        province.SetCastle(this);
     }
 
     public Province GetProvince()
@@ -26,16 +25,21 @@ public class Castle : RepositoryData
         return ProvinceRepository.Instance.GetProvince(provinceId);
     }
 
-    public void AddTerritoryProvinceId(int territoryProvinceId)
+    public void AddTerritoryProvince(Province territoryProvince)
     {
-        territoryProvinceIds.Add(territoryProvinceId);
+        territoryProvinceIds.Add(territoryProvince.Id);
     }
 
-    public void AddUniqueNeighboringCastleId(int neighboringCastleId)
+    public List<Province> GetTerritoryProvince()
     {
-        if(!neighboringCastleIds.Contains(neighboringCastleId))
+        return territoryProvinceIds.ConvertAll(x => ProvinceRepository.Instance.GetProvince(x));
+    }
+
+    public void AddUniqueNeighboringCastle(Castle neighboringCastle)
+    {
+        if(!neighboringCastleIds.Contains(neighboringCastle.Id))
         {
-            neighboringCastleIds.Add(neighboringCastleId);
+            neighboringCastleIds.Add(neighboringCastle.Id);
         }
     }
 
@@ -44,25 +48,23 @@ public class Castle : RepositoryData
         return neighboringCastleIds.ConvertAll(x => CastleRepository.Instance.GetCastle(x));
     }
 
-    public void SetDaimyo(Person daimyo)
+    public void SetFaction(Faction faction)
     {
-        Daimyo = daimyo;
+        factionId = faction.Id;
     }
 
-    public void SetJoshu(Person joshu)
+    public Faction GetFaction()
     {
-        Joshu = joshu;
+        return FactionRepository.Instance.GetFaction(factionId);
     }
 
-    public void AddHouse(int houseId)
+    public void SetJoshu(Person joshuPerson)
     {
-        //関連を変更するときは、Houseオブジェクトだけがこれを使うこと
-        houseIds.Add(houseId);
+        joshuPersonId = joshuPerson.Id;
     }
 
-    public void RemoveHouse(int houseId)
+    public Person GetJoshu()
     {
-        //関連を変更するときは、Houseオブジェクトだけがこれを使うこと
-        houseIds.Remove(houseId);
+        return PersonRepository.Instance.GetPerson(joshuPersonId);
     }
 }

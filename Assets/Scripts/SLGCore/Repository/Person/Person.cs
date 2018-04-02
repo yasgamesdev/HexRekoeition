@@ -7,14 +7,14 @@ public class Person : RepositoryData
     public bool IsPlayer { get; private set; }
     public string Name { get; private set; }
     public PersonStatus Status { get; private set; }
-    public int FactionId { get; private set; }
-    public int BossPersonId { get; private set; }
-    public int HouseId { get; private set; }
+    int factionId;
+    int bossPersonId;
+    int houseId;
     
-    public PlaceType curPlaceType { get; private set; }
-    public int placeId { get; private set; }
+    public PlaceType CurPlaceType { get; private set; }
+    int curPlaceId;
 
-    public int kunko { get; private set; }
+    public int Kunko { get; private set; }
 
     public Person(bool isPlayer, string name, PersonStatus status, Repository repository) :base(repository)
     {
@@ -22,17 +22,63 @@ public class Person : RepositoryData
         Name = name;
         Status = status;
 
-        kunko = GetKunko(status);
+        Kunko = GetKunko(status);
     }
 
-    public void SetFactionId(int factionId)
+    public void SetFaction(Faction faction)
     {
-
+        factionId = faction.Id;
     }
 
-    public void SetBossPersonId(int bossPersonId)
+    public Faction GetFaction()
     {
+        return FactionRepository.Instance.GetFaction(factionId);
+    }
 
+    public void SetBossPerson(Person bossPerson)
+    {
+        bossPersonId = bossPerson.Id;
+    }
+
+    public Person GetBossPerson()
+    {
+        return PersonRepository.Instance.GetPerson(bossPersonId);
+    }
+
+    public void SetHouse(House house)
+    {
+        houseId = house.Id;
+    }
+
+    public House GetHouse()
+    {
+        return HouseRepository.Instance.GetHouse(houseId);
+    }
+
+    public void SetCurPlace(PlaceType curPlaceType, RepositoryData curPlace)
+    {
+        CurPlaceType = curPlaceType;
+        curPlaceId = curPlace.Id;
+    }
+
+    public Province GetCurProvince()
+    {
+        return ProvinceRepository.Instance.GetProvince(curPlaceId);
+    }
+
+    public Castle GetCurCastle()
+    {
+        return CastleRepository.Instance.GetCastle(curPlaceId);
+    }
+
+    public Town GetCurTown()
+    {
+        return TownRepository.Instance.GetTown(curPlaceId);
+    }
+
+    public House GetCurHouse()
+    {
+        return HouseRepository.Instance.GetHouse(curPlaceId);
     }
 
     public static int GetKunko(PersonStatus status)

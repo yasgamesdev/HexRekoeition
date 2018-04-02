@@ -4,7 +4,7 @@ using System.Linq;
 
 public class House : RepositoryData
 {
-    public int PersonId { get; private set; }
+    int ownerPersonId;
 
     public HouseType houseType { get; private set; } = HouseType.None;
     int placeId;
@@ -13,35 +13,30 @@ public class House : RepositoryData
     {
     }
 
+    public Person GetOwnerPerson()
+    {
+        return PersonRepository.Instance.GetPerson(ownerPersonId);
+    }
+
     public void SetCastle(int castleId)
     {
-        UnsetHouse();
-
         houseType = HouseType.Castle;
         placeId = castleId;
-        CastleRepository.Instance.GetCastle(castleId).AddHouse(Id);
+    }
+
+    public Castle GetCastle()
+    {
+        return CastleRepository.Instance.GetCastle(placeId);
     }
 
     public void SetTown(int townId)
     {
-        UnsetHouse();
-
         houseType = HouseType.Town;
         placeId = townId;
-        TownRepository.Instance.GetTown(townId).AddHouse(Id);
     }
 
-    void UnsetHouse()
+    public Town GetTown()
     {
-        if(houseType == HouseType.Castle)
-        {
-            CastleRepository.Instance.GetCastle(placeId).RemoveHouse(Id);
-        }
-        else if(houseType == HouseType.Town)
-        {
-            TownRepository.Instance.GetTown(placeId).RemoveHouse(Id);
-        }
-
-        houseType = HouseType.None;
+        return TownRepository.Instance.GetTown(placeId);
     }
 }
