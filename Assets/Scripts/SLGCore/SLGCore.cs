@@ -30,6 +30,8 @@ public class SLGCore
         ProvinceRepository.Instance.SetTerritory();
         ProvinceRepository.Instance.SetNeighboringCastles();
 
+        DijkstraPathFinder.CreateEdges();
+
         PersonRepository.Instance.GenerateFactions(3);
         PersonRepository.Instance.GenerateSamurai(100);
         PersonRepository.Instance.GenerateRonin(100);
