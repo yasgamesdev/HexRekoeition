@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-public class Person : RepositoryData
+public class Person : RepositoryData, IGetPlaceComponent
 {
     public bool IsPlayer { get; private set; }
     public string Name { get; private set; }
@@ -10,9 +10,8 @@ public class Person : RepositoryData
     int factionId;
     int bossPersonId;
     int houseId;
-    
-    public PlaceType CurPlaceType { get; private set; }
-    int curPlaceId;
+
+    PlaceComponent placeComponent = new PlaceComponent();
 
     public int Kunko { get; private set; }
 
@@ -23,6 +22,11 @@ public class Person : RepositoryData
         Status = status;
 
         Kunko = GetKunko(status);
+    }
+
+    public void SetIsPlayer(bool isPlayer)
+    {
+        IsPlayer = isPlayer;
     }
 
     public void SetFaction(Faction faction)
@@ -55,32 +59,6 @@ public class Person : RepositoryData
         return HouseRepository.Instance.GetHouse(houseId);
     }
 
-    public void SetCurPlace(PlaceType curPlaceType, RepositoryData curPlace)
-    {
-        CurPlaceType = curPlaceType;
-        curPlaceId = curPlace.Id;
-    }
-
-    public Province GetCurProvince()
-    {
-        return ProvinceRepository.Instance.GetProvince(curPlaceId);
-    }
-
-    public Castle GetCurCastle()
-    {
-        return CastleRepository.Instance.GetCastle(curPlaceId);
-    }
-
-    public Town GetCurTown()
-    {
-        return TownRepository.Instance.GetTown(curPlaceId);
-    }
-
-    public House GetCurHouse()
-    {
-        return HouseRepository.Instance.GetHouse(curPlaceId);
-    }
-
     public static int GetKunko(PersonStatus status)
     {
         switch(status)
@@ -105,5 +83,10 @@ public class Person : RepositoryData
             default:
                 return 0;
         }
+    }
+
+    public PlaceComponent GetPlaceComponent()
+    {
+        return placeComponent;
     }
 }

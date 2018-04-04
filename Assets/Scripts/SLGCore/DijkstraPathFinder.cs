@@ -172,6 +172,7 @@ public class DijkstraPathFinder
         //path.ForEach(x => UnityEngine.Debug.Log(x.x + ", " + x.z));
 
         List<Province> pathProvinces = new List<Province>();
+
         for (int i = 0; i < path.Count - 1; i++)
         {
             Castle fromPathCastle = path[i].GetCastle();

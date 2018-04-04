@@ -35,6 +35,8 @@ public class SLGCore
         PersonRepository.Instance.GenerateFactions(3);
         PersonRepository.Instance.GenerateSamurai(100);
         PersonRepository.Instance.GenerateRonin(100);
+
+        PersonRepository.Instance.SetPlayerPerson();
     }
 
     //World world;

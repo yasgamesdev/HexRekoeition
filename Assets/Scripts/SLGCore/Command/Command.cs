@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-public class Command
+public abstract class Command
 {
-    
+    public abstract CommandExecResult Exec();
 }
