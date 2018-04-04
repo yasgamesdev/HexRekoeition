@@ -152,7 +152,7 @@ public class UnitManager : MonoBehaviour
     {
         if(fromCastle != null & toCastle != null)
         {
-            DijkstraPathFinder.GetPath(fromCastle, toCastle);
+            DijkstraPathFinder.GetPath(fromCastle, toCastle).ForEach(x => UnityEngine.Debug.Log(x.x + ", " + x.z));
         }
     }
 }

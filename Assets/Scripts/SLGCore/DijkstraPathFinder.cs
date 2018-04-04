@@ -115,7 +115,7 @@ public class DijkstraPathFinder
         return provinces;
     }
 
-    public static void GetPath(Castle fromCastle, Castle toCastle)
+    public static List<Province> GetPath(Castle fromCastle, Castle toCastle)
     {
         List<Castle> castles = CastleRepository.Instance.GetAllCastle();
 
@@ -169,7 +169,21 @@ public class DijkstraPathFinder
         }
 
         var path = CreatePath(goalNode);
-        path.ForEach(x => UnityEngine.Debug.Log(x.x + ", " + x.z));
+        //path.ForEach(x => UnityEngine.Debug.Log(x.x + ", " + x.z));
+
+        List<Province> pathProvinces = new List<Province>();
+        for (int i = 0; i < path.Count - 1; i++)
+        {
+            Castle fromPathCastle = path[i].GetCastle();
+            Castle toPathCastle = path[i + 1].GetCastle();
+            List<Province> pathProvince = edges[fromPathCastle.Id].First(x => x.GetToCastle() == toPathCastle).GetPathProvinces();
+            for(int j=1; j<pathProvince.Count; j++)
+            {
+                pathProvinces.Add(pathProvince[j]);
+            }
+        }
+
+        return pathProvinces;
     }
 
     static ANode GetANode(ANode[] nodes, int x, int z)
