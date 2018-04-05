@@ -9,5 +9,7 @@ public class Faction : RepositoryData
     public Faction(string name, Repository repository) :base(repository)
     {
         Name = name;
+
+        Hostiles.Instance.AddFaction(this);
     }
 }

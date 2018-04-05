@@ -191,4 +191,113 @@ public class DijkstraPathFinder
     {
         return nodes.First(y => y.x == x && y.z == z);
     }
+
+    public static List<Province> GetPath(Faction faction, ref bool result, Castle fromCastle, Castle toCastle)
+    {
+        Dictionary<Faction, bool> hostiles = Hostiles.Instance.GetHostiles(faction);
+        List<Castle> allCastles = CastleRepository.Instance.GetAllCastle();
+
+        List<Castle> castles = new List<Castle>();
+        foreach(Castle castle in allCastles)
+        {
+            if(castle == fromCastle || castle == toCastle || hostiles[castle.GetFaction()] == false)
+            {
+                castles.Add(castle);
+            }
+        }
+
+        Dictionary<int, List<Edge>> _edges = new Dictionary<int, List<Edge>>();
+        foreach(var edge in edges)
+        {
+            if(castles.Contains(CastleRepository.Instance.GetCastle(edge.Key)))
+            {
+                foreach(var item in edge.Value)
+                {
+                    if(castles.Contains(item.GetToCastle()))
+                    {
+                        if(!_edges.ContainsKey(edge.Key))
+                        {
+                            _edges.Add(edge.Key, new List<Edge>());
+                        }
+
+                        _edges[edge.Key].Add(item);
+                    }
+                }
+            }
+        }
+
+        ANode[] castleNodes = new ANode[castles.Count];
+        for (int i = 0; i < castleNodes.Length; i++)
+        {
+            Province castleProvince = castles[i].GetProvince();
+            castleNodes[i] = new ANode(castleProvince.x, castleProvince.z, castleProvince);
+        }
+
+        ANode startNode = GetANode(castleNodes, fromCastle.GetProvince().x, fromCastle.GetProvince().z);
+        startNode.C = 0;
+        startNode.state = ANodeState.Close;
+
+        ANode goalNode = GetANode(castleNodes, toCastle.GetProvince().x, toCastle.GetProvince().z);
+
+        while (true)
+        {
+            if (goalNode.state == ANodeState.Close)
+            {
+                break;
+            }
+
+            int minCost = int.MaxValue;
+            Edge minEdge = null;
+            foreach (ANode closeNode in castleNodes.Where(x => x.state == ANodeState.Close))
+            {
+                Province closeCastleProvince = closeNode.province;
+                foreach (Edge edge in _edges[closeCastleProvince.GetCastle().Id])
+                {
+                    Province toProvince = edge.GetToCastle().GetProvince();
+                    ANode toNode = GetANode(castleNodes, toProvince.x, toProvince.z);
+                    if (toNode.state == ANodeState.None)
+                    {
+                        int newCost = closeNode.C + edge.GetPathProvinces().Count - 1;
+                        if (newCost < minCost)
+                        {
+                            minCost = newCost;
+                            minEdge = edge;
+                        }
+                    }
+                }
+            }
+
+            if(minEdge == null)
+            {
+                result = false;
+                return new List<Province>();
+            }
+
+            ANode fromMinNode = GetANode(castleNodes, minEdge.GetFromCastle().GetProvince().x, minEdge.GetFromCastle().GetProvince().z);
+            ANode toMinNode = GetANode(castleNodes, minEdge.GetToCastle().GetProvince().x, minEdge.GetToCastle().GetProvince().z);
+
+            toMinNode.C = minCost;
+            toMinNode.parent = fromMinNode;
+            toMinNode.state = ANodeState.Close;
+        }
+
+        var path = CreatePath(goalNode);
+        //path.ForEach(x => UnityEngine.Debug.Log(x.x + ", " + x.z));
+
+        List<Province> pathProvinces = new List<Province>();
+
+        for (int i = 0; i < path.Count - 1; i++)
+        {
+            Castle fromPathCastle = path[i].GetCastle();
+            Castle toPathCastle = path[i + 1].GetCastle();
+            List<Province> pathProvince = edges[fromPathCastle.Id].First(x => x.GetToCastle() == toPathCastle).GetPathProvinces();
+            for (int j = 1; j < pathProvince.Count; j++)
+            {
+                pathProvinces.Add(pathProvince[j]);
+            }
+        }
+
+        result = true;
+        return pathProvinces;
+    }
 }
