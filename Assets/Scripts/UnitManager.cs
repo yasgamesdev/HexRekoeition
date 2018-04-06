@@ -163,7 +163,7 @@ public class UnitManager : MonoBehaviour
                 Province province = ProvinceRepository.Instance.GetProvince(_x, _z);
 
                 Person person = PersonRepository.Instance.GetPlayerPerson();
-                if (!person.GetPlaceComponent().HavePath() && province.ProvinceType == ProvinceType.Castle)
+                if (!person.GetPlaceComponent().HavePath() && province.ProvinceType != ProvinceType.None)
                 {
                     //var path = DijkstraPathFinder.GetPath(person.GetPlaceComponent().GetCurProvince().GetCastle(), province.GetCastle());
                     //PersonRepository.Instance.GetPlayerPerson().GetPlaceComponent().SetPath(path);
@@ -172,7 +172,8 @@ public class UnitManager : MonoBehaviour
                     //FindPath();
 
                     bool result = false;
-                    var path = DijkstraPathFinder.GetPath(person.GetFaction(), ref result, person.GetPlaceComponent().GetCurProvince().GetCastle(), province.GetCastle());
+                    //var path = DijkstraPathFinder.GetPath(person.GetFaction(), ref result, person.GetPlaceComponent().GetCurProvince().GetCastle(), province.GetCastle());
+                    var path = HexPathFinder.GetPath(person.GetFaction(), ref result, person.GetPlaceComponent().GetCurProvince(), province);
 
                     Debug.Log(result);
                     PersonRepository.Instance.GetPlayerPerson().GetPlaceComponent().SetPath(path);
