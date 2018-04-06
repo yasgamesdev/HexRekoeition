@@ -171,11 +171,15 @@ public class UnitManager : MonoBehaviour
                     //toCastle = province.GetCastle();
                     //FindPath();
 
+                    System.Diagnostics.Stopwatch sw = new System.Diagnostics.Stopwatch();
+                    sw.Start();
                     bool result = false;
                     //var path = DijkstraPathFinder.GetPath(person.GetFaction(), ref result, person.GetPlaceComponent().GetCurProvince().GetCastle(), province.GetCastle());
-                    var path = HexPathFinder.GetPath(person.GetFaction(), ref result, person.GetPlaceComponent().GetCurProvince(), province);
+                    var path = HexPathFinder.GetPath(person.GetFaction(), true, person.GetPlaceComponent().GetCurProvince(), province, ref result);
+                    sw.Stop();
 
                     Debug.Log(result);
+                    Debug.Log(sw.Elapsed);
                     PersonRepository.Instance.GetPlayerPerson().GetPlaceComponent().SetPath(path);
                 }
             }

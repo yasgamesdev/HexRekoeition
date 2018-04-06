@@ -21,6 +21,7 @@ public class SLGCore
     public void GenerateWorld(int width, int height, float size)
     {
         ProvinceRepository.Instance.GenerateProvince(width, height, size);
+        HexPathFinder.SetProvinces(ProvinceRepository.Instance.GetAllProvince(), ProvinceRepository.Instance.Width, ProvinceRepository.Instance.Height);
 
         CastleRepository.Instance.GenerateCastle(100, 4, ProvinceRepository.Instance);
         TownRepository.Instance.GenerateTown(100, 3, ProvinceRepository.Instance);
