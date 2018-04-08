@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 
-public class Person : RepositoryData, IGetPlaceComponent
-{
+public class Person : RepositoryData
+{ 
     public bool IsPlayer { get; private set; }
     public string Name { get; private set; }
     public PersonStatus Status { get; private set; }
@@ -11,12 +11,12 @@ public class Person : RepositoryData, IGetPlaceComponent
     int bossPersonId;
     int houseId;
 
-    PlaceComponent placeComponent = new PlaceComponent();
-
     public int Kunko { get; private set; }
 
     public Person(bool isPlayer, string name, PersonStatus status, Repository repository) :base(repository)
     {
+        AddComponent(new PlaceComponent());
+
         IsPlayer = isPlayer;
         Name = name;
         Status = status;
@@ -83,10 +83,5 @@ public class Person : RepositoryData, IGetPlaceComponent
             default:
                 return 0;
         }
-    }
-
-    public PlaceComponent GetPlaceComponent()
-    {
-        return placeComponent;
     }
 }

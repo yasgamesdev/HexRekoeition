@@ -25,7 +25,7 @@ public class UnitManager : MonoBehaviour
     {
         SetPlayerPath();
 
-        if(PersonRepository.Instance.GetPlayerPerson().GetPlaceComponent().HavePath())
+        if(PersonRepository.Instance.GetPlayerPerson().GetComponent<PlaceComponent>().HavePath())
         {
             timer += Time.deltaTime;
             if(timer < speed)
@@ -36,7 +36,7 @@ public class UnitManager : MonoBehaviour
             {
                 timer = 0.0f;
 
-                units.ForEach(x => x.GetComponent<WorldPerson>().person.GetPlaceComponent().Update());
+                units.ForEach(x => x.GetComponent<WorldPerson>().person.GetComponent<PlaceComponent>().Update());
             }
         }
 
@@ -163,7 +163,7 @@ public class UnitManager : MonoBehaviour
                 Province province = ProvinceRepository.Instance.GetProvince(_x, _z);
 
                 Person person = PersonRepository.Instance.GetPlayerPerson();
-                if (!person.GetPlaceComponent().HavePath() && province.ProvinceType != ProvinceType.None)
+                if (!person.GetComponent<PlaceComponent>().HavePath() && province.ProvinceType != ProvinceType.None)
                 {
                     //var path = DijkstraPathFinder.GetPath(person.GetPlaceComponent().GetCurProvince().GetCastle(), province.GetCastle());
                     //PersonRepository.Instance.GetPlayerPerson().GetPlaceComponent().SetPath(path);
@@ -175,12 +175,12 @@ public class UnitManager : MonoBehaviour
                     sw.Start();
                     bool result = false;
                     //var path = DijkstraPathFinder.GetPath(person.GetFaction(), ref result, person.GetPlaceComponent().GetCurProvince().GetCastle(), province.GetCastle());
-                    var path = HexPathFinder.GetPath(person.GetFaction(), true, person.GetPlaceComponent().GetCurProvince(), province, ref result);
+                    var path = HexPathFinder.GetPath(person.GetFaction(), true, person.GetComponent<PlaceComponent>().GetCurProvince(), province, ref result);
                     sw.Stop();
 
                     Debug.Log(result);
                     Debug.Log(sw.Elapsed);
-                    PersonRepository.Instance.GetPlayerPerson().GetPlaceComponent().SetPath(path);
+                    PersonRepository.Instance.GetPlayerPerson().GetComponent<PlaceComponent>().SetPath(path);
                 }
             }
         }
@@ -192,7 +192,7 @@ public class UnitManager : MonoBehaviour
         {
             var path = DijkstraPathFinder.GetPath(fromCastle, toCastle);
             path.ForEach(x => UnityEngine.Debug.Log(x.x + ", " + x.z));
-            PersonRepository.Instance.GetPlayerPerson().GetPlaceComponent().SetPath(path);
+            PersonRepository.Instance.GetPlayerPerson().GetComponent<PlaceComponent>().SetPath(path);
         }
     }
 }

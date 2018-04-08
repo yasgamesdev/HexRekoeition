@@ -47,7 +47,7 @@ public class PersonRepository : Repository
             house.SetCastle(homeCastle);
             daimyo.SetHouse(house);
 
-            daimyo.GetPlaceComponent().SetCurPlace(house);
+            daimyo.GetComponent<PlaceComponent>().SetCurPlace(house);
 
             Faction faction = FactionRepository.Instance.CreateFaction(daimyo.Name);
             daimyo.SetFaction(faction);
@@ -99,7 +99,7 @@ public class PersonRepository : Repository
             house.SetCastle(homeCastle);
             samurai.SetHouse(house);
 
-            samurai.GetPlaceComponent().SetCurPlace(house);
+            samurai.GetComponent<PlaceComponent>().SetCurPlace(house);
 
             samurai.SetFaction(faction);
             samurai.SetBossPerson(daimyo);
@@ -126,7 +126,7 @@ public class PersonRepository : Repository
             house.SetTown(homeTown);
             ronin.SetHouse(house);
 
-            ronin.GetPlaceComponent().SetCurPlace(house);
+            ronin.GetComponent<PlaceComponent>().SetCurPlace(house);
         }
     }
 
@@ -137,11 +137,11 @@ public class PersonRepository : Repository
         House house = playerPerson.GetHouse();
         if(house.HouseType == HouseType.Castle)
         {
-            playerPerson.GetPlaceComponent().SetCurPlace(house.GetCastle().GetProvince());
+            playerPerson.GetComponent<PlaceComponent>().SetCurPlace(house.GetCastle().GetProvince());
         }
         else
         {
-            playerPerson.GetPlaceComponent().SetCurPlace(house.GetTown().GetProvince());
+            playerPerson.GetComponent<PlaceComponent>().SetCurPlace(house.GetTown().GetProvince());
         }
     }
 

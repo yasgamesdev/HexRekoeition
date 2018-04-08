@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-public class RepositoryData
+public class RepositoryData : Entity
 {
     public int Id { get; private set; }
 

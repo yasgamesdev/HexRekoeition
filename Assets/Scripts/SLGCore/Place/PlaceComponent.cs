@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-public class PlaceComponent
+public class PlaceComponent : Component
 {
     public PlaceType CurPlaceType { get; private set; }
     int curPlaceId;

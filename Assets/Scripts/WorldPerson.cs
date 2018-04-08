@@ -14,9 +14,9 @@ public class WorldPerson : MonoBehaviour
     // Update is called once per frame
     public void UpdatePosition()
     {
-        if (person.GetPlaceComponent().CurPlaceType == PlaceType.Province)
+        if (person.GetComponent<PlaceComponent>().CurPlaceType == PlaceType.Province)
         {
-            Province province = person.GetPlaceComponent().GetCurProvince();
+            Province province = person.GetComponent<PlaceComponent>().GetCurProvince();
 
             Vector3 center;
             center.x = (province.x + province.z * 0.5f - province.z / 2) * (HexMetrics.innerRadius * 2f);
@@ -57,9 +57,9 @@ public class WorldPerson : MonoBehaviour
 
     public void UpdateRatePosition(float rate)
     {
-        if (person.GetPlaceComponent().CurPlaceType == PlaceType.Province)
+        if (person.GetComponent<PlaceComponent>().CurPlaceType == PlaceType.Province)
         {
-            Province province = person.GetPlaceComponent().GetCurProvince();
+            Province province = person.GetComponent<PlaceComponent>().GetCurProvince();
 
             Vector3 from;
             from.x = (province.x + province.z * 0.5f - province.z / 2) * (HexMetrics.innerRadius * 2f);
@@ -67,9 +67,9 @@ public class WorldPerson : MonoBehaviour
             from.z = province.z * (HexMetrics.outerRadius * 1.5f);
             transform.localPosition = from;
 
-            if(person.GetPlaceComponent().HavePath())
+            if(person.GetComponent<PlaceComponent>().HavePath())
             {
-                Province nextProvince = person.GetPlaceComponent().GetNextProvince();
+                Province nextProvince = person.GetComponent<PlaceComponent>().GetNextProvince();
 
                 Vector3 to;
                 to.x = (nextProvince.x + nextProvince.z * 0.5f - nextProvince.z / 2) * (HexMetrics.innerRadius * 2f);
