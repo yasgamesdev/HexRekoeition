@@ -4,5 +4,5 @@ using System.Linq;
 
 public abstract class Command
 {
-    public abstract CommandExecResult Exec();
+    public abstract CommandExecResult Exec(Component component);
 }

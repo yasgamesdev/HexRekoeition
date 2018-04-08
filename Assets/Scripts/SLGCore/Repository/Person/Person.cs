@@ -15,7 +15,8 @@ public class Person : RepositoryData
 
     public Person(bool isPlayer, string name, PersonStatus status, Repository repository) :base(repository)
     {
-        AddComponent(new PlaceComponent());
+        AddComponent(new Place());
+        AddComponent(new CommandQueue());
 
         IsPlayer = isPlayer;
         Name = name;

@@ -10,4 +10,9 @@ public class Component
     {
         this.parent = parent;
     }
+
+    public T GetComponent<T>() where T : Component
+    {
+        return parent.GetComponent<T>();
+    }
 }

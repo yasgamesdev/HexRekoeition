@@ -1,4 +1,0 @@
-﻿interface IGetPlaceComponent
-{
-    PlaceComponent GetPlaceComponent();
-}

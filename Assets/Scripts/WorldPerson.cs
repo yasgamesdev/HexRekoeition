@@ -14,9 +14,9 @@ public class WorldPerson : MonoBehaviour
     // Update is called once per frame
     public void UpdatePosition()
     {
-        if (person.GetComponent<PlaceComponent>().CurPlaceType == PlaceType.Province)
+        if (person.GetComponent<Place>().CurPlaceType == PlaceType.Province)
         {
-            Province province = person.GetComponent<PlaceComponent>().GetCurProvince();
+            Province province = person.GetComponent<Place>().GetCurProvince();
 
             Vector3 center;
             center.x = (province.x + province.z * 0.5f - province.z / 2) * (HexMetrics.innerRadius * 2f);
@@ -57,9 +57,9 @@ public class WorldPerson : MonoBehaviour
 
     public void UpdateRatePosition(float rate)
     {
-        if (person.GetComponent<PlaceComponent>().CurPlaceType == PlaceType.Province)
+        if (person.GetComponent<Place>().CurPlaceType == PlaceType.Province)
         {
-            Province province = person.GetComponent<PlaceComponent>().GetCurProvince();
+            Province province = person.GetComponent<Place>().GetCurProvince();
 
             Vector3 from;
             from.x = (province.x + province.z * 0.5f - province.z / 2) * (HexMetrics.innerRadius * 2f);
@@ -67,17 +67,22 @@ public class WorldPerson : MonoBehaviour
             from.z = province.z * (HexMetrics.outerRadius * 1.5f);
             transform.localPosition = from;
 
-            if(person.GetComponent<PlaceComponent>().HavePath())
+            if(person.GetComponent<CommandQueue>().HaveCommand())
             {
-                Province nextProvince = person.GetComponent<PlaceComponent>().GetNextProvince();
+                Command command = person.GetComponent<CommandQueue>().Peek();
+                if(command is Move)
+                {
+                    Move move = (Move)command;
+                    Province nextProvince = move.GetNextProvince();
 
-                Vector3 to;
-                to.x = (nextProvince.x + nextProvince.z * 0.5f - nextProvince.z / 2) * (HexMetrics.innerRadius * 2f);
-                to.y = 0.2f;
-                to.z = nextProvince.z * (HexMetrics.outerRadius * 1.5f);
+                    Vector3 to;
+                    to.x = (nextProvince.x + nextProvince.z * 0.5f - nextProvince.z / 2) * (HexMetrics.innerRadius * 2f);
+                    to.y = 0.2f;
+                    to.z = nextProvince.z * (HexMetrics.outerRadius * 1.5f);
 
-                Vector3 center = from + (to - from) * rate;
-                transform.localPosition = center;
+                    Vector3 center = from + (to - from) * rate;
+                    transform.localPosition = center;
+                }
             }
 
             //if (person.NextProvince == null)

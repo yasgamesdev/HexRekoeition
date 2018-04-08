@@ -2,20 +2,20 @@
 using System.Collections.Generic;
 using System.Linq;
 
-public class CommandComponent
+public class CommandQueue : Component
 {
     Queue<Command> commandQueue = new Queue<Command>();
 
     public void Exec()
     {
-        while(commandQueue.Count > 0)
+        if(commandQueue.Count > 0)
         {
-            CommandExecResult result = commandQueue.Peek().Exec();
+            CommandExecResult result = commandQueue.Peek().Exec(this);
             switch(result)
             {
                 case CommandExecResult.Finish:
                     commandQueue.Dequeue();
-                    continue;
+                    break;
                 case CommandExecResult.FinishAndBreak:
                     commandQueue.Dequeue();
                     break;
@@ -31,5 +31,15 @@ public class CommandComponent
     public bool HaveCommand()
     {
         return commandQueue.Count > 0;
+    }
+
+    public void AddCommand(Command command)
+    {
+        commandQueue.Enqueue(command);
+    }
+
+    public Command Peek()
+    {
+        return commandQueue.Peek();
     }
 }
