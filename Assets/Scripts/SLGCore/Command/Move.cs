@@ -17,7 +17,7 @@ public class Move : Command
     {
         curPathIndex++;
         Province nextProvince = ProvinceRepository.Instance.GetProvince(pathProvinceIds[curPathIndex]);
-        component.GetComponent<Place>().SetCurPlace(nextProvince);
+        component.GetComponent<PlaceComponent>().SetCurPlace(nextProvince);
 
         if (curPathIndex >= pathProvinceIds.Count - 1)
         {

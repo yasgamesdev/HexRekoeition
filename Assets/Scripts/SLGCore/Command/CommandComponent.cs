@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-public class CommandQueue : Component
+public class CommandComponent : Component
 {
     Queue<Command> commandQueue = new Queue<Command>();
 

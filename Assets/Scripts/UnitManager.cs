@@ -25,7 +25,7 @@ public class UnitManager : MonoBehaviour
     {
         SetPlayerPath();
 
-        if(PersonRepository.Instance.GetPlayerPerson().GetComponent<CommandQueue>().HaveCommand())
+        if(PersonRepository.Instance.GetPlayerPerson().GetComponent<CommandComponent>().HaveCommand())
         {
             timer += Time.deltaTime;
             if(timer < speed)
@@ -36,7 +36,7 @@ public class UnitManager : MonoBehaviour
             {
                 timer = 0.0f;
 
-                units.ForEach(x => x.GetComponent<WorldPerson>().person.GetComponent<CommandQueue>().Exec());
+                units.ForEach(x => x.GetComponent<WorldPerson>().person.GetComponent<CommandComponent>().Exec());
             }
         }
 
@@ -163,7 +163,7 @@ public class UnitManager : MonoBehaviour
                 Province province = ProvinceRepository.Instance.GetProvince(_x, _z);
 
                 Person person = PersonRepository.Instance.GetPlayerPerson();
-                if (!person.GetComponent<CommandQueue>().HaveCommand() && province.ProvinceType != ProvinceType.None)
+                if (!person.GetComponent<CommandComponent>().HaveCommand() && province.ProvinceType != ProvinceType.None)
                 {
                     //var path = DijkstraPathFinder.GetPath(person.GetPlaceComponent().GetCurProvince().GetCastle(), province.GetCastle());
                     //PersonRepository.Instance.GetPlayerPerson().GetPlaceComponent().SetPath(path);
@@ -175,13 +175,12 @@ public class UnitManager : MonoBehaviour
                     sw.Start();
                     bool result = false;
                     //var path = DijkstraPathFinder.GetPath(person.GetFaction(), ref result, person.GetPlaceComponent().GetCurProvince().GetCastle(), province.GetCastle());
-                    var path = HexPathFinder.GetPath(person.GetFaction(), true, person.GetComponent<Place>().GetCurProvince(), province, ref result);
+                    var path = HexPathFinder.GetPath(person.GetFaction(), true, person.GetComponent<PlaceComponent>().GetCurProvince(), province, ref result);
                     sw.Stop();
 
                     Debug.Log(result);
                     Debug.Log(sw.Elapsed);
-                    PersonRepository.Instance.GetPlayerPerson().GetComponent<CommandQueue>().AddCommand(new Move(path));
-                    //PersonRepository.Instance.GetPlayerPerson().GetComponent<Place>().SetPath(path);
+                    PersonRepository.Instance.GetPlayerPerson().GetComponent<CommandComponent>().AddCommand(new Move(path));
                 }
             }
         }
