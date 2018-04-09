@@ -23,6 +23,11 @@ public class FactionRepository : Repository
         return (Faction)GetRepositoryData(factionId);
     }
 
+    public List<Faction> GetAllFaction()
+    {
+        return GetAllRepositoryData().Cast<Faction>().ToList();
+    }
+
     public Faction CreateFaction(string name)
     {
         return new Faction(name, this);

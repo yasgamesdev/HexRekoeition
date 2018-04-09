@@ -12,6 +12,8 @@ public class Castle : RepositoryData
     int factionId;
     int joshuPersonId;
 
+    public int SoldiersNum { get; private set; }
+
     public Castle(Province province, Repository repository) : base(repository)
     {
         provinceId = province.Id;
@@ -71,5 +73,12 @@ public class Castle : RepositoryData
     public List<House> GetHouses()
     {
         return HouseRepository.Instance.GetHouses(this);
+    }
+
+    public void AddSoldiers(Random rand)
+    {
+        int houseNum = GetHouses().Count;
+
+        SoldiersNum += rand.Next(10 * houseNum);
     }
 }

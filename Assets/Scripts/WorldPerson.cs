@@ -12,7 +12,7 @@ public class WorldPerson : MonoBehaviour
     }
 
     // Update is called once per frame
-    public void UpdatePosition()
+    void Update()
     {
         if (person.GetComponent<PlaceComponent>().CurPlaceType == PlaceType.Province)
         {

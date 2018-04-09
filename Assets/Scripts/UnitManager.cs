@@ -25,29 +25,29 @@ public class UnitManager : MonoBehaviour
     {
         SetPlayerPath();
 
-        if(PersonRepository.Instance.GetPlayerPerson().GetComponent<CommandComponent>().HaveCommand())
-        {
-            timer += Time.deltaTime;
-            if(timer < speed)
-            {
+        //if(PersonRepository.Instance.GetPlayerPerson().GetComponent<CommandComponent>().HaveCommand())
+        //{
+        //    timer += Time.deltaTime;
+        //    if(timer < speed)
+        //    {
 
-            }
-            else
-            {
-                timer = 0.0f;
+        //    }
+        //    else
+        //    {
+        //        timer = 0.0f;
 
-                units.ForEach(x => x.GetComponent<WorldPerson>().person.GetComponent<CommandComponent>().Exec());
-            }
-        }
+        //        units.ForEach(x => x.GetComponent<WorldPerson>().person.GetComponent<CommandComponent>().Exec());
+        //    }
+        //}
 
-        if(timer == 0.0f)
-        {
-            units.ForEach(x => x.GetComponent<WorldPerson>().UpdatePosition());
-        }
-        else
-        {
-            units.ForEach(x => x.GetComponent<WorldPerson>().UpdateRatePosition(timer / speed));
-        }
+        //if(timer == 0.0f)
+        //{
+        //    units.ForEach(x => x.GetComponent<WorldPerson>().UpdatePosition());
+        //}
+        //else
+        //{
+        //    units.ForEach(x => x.GetComponent<WorldPerson>().UpdateRatePosition(timer / speed));
+        //}
     }
 
     Castle fromCastle, toCastle;
@@ -103,14 +103,12 @@ public class UnitManager : MonoBehaviour
 
                 if (province.ProvinceType == ProvinceType.Castle)
                 {
-                    //fromCastle = province.GetCastle();
-                    //FindPath();
-
-                    Person playerPerson = PersonRepository.Instance.GetPlayerPerson();
-                    if(playerPerson.GetFaction() != province.GetCastle().GetFaction())
-                    {
-                        Hostiles.Instance.SetHostile(playerPerson.GetFaction(), province.GetCastle().GetFaction(), true);
-                    }
+                    //Person playerPerson = PersonRepository.Instance.GetPlayerPerson();
+                    //if(playerPerson.GetFaction() != province.GetCastle().GetFaction())
+                    //{
+                    //    Hostiles.Instance.SetHostile(playerPerson.GetFaction(), province.GetCastle().GetFaction(), true);
+                    //}
+                    Debug.Log(province.GetCastle().GetFaction().GetSoldiersNum());
                 }
             }
         }

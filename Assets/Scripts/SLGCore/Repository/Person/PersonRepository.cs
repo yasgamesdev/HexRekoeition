@@ -149,4 +149,12 @@ public class PersonRepository : Repository
     {
         return GetAllRepositoryData().Cast<Person>().First(x => x.IsPlayer);
     }
+
+    public void Update()
+    {
+        foreach(Person person in GetAllRepositoryData().Cast<Person>())
+        {
+            person.GetComponent<CommandComponent>().Exec();
+        }
+    }
 }

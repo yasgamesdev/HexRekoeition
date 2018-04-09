@@ -49,4 +49,9 @@ public class CastleRepository : Repository
     {
         return GetAllRepositoryData().Cast<Castle>().ToList();
     }
+
+    public List<Castle> GetCastles(Faction faction)
+    {
+        return GetAllCastle().Where(x => x.GetFaction() == faction).ToList();
+    }
 }
